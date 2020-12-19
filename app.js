@@ -7,6 +7,8 @@ const ExpressError = require("./helpers/expressError");
 const morgan = require("morgan");
 const app = express();
 
+const companyRoutes = require("./routes/companies");
+app.use("/companies", companyRoutes);
 app.use(express.json());
 
 // add logging system
