@@ -9,10 +9,11 @@ const app = express();
 
 const companyRoutes = require("./routes/companies");
 app.use("/companies", companyRoutes);
+// middleware to parse incoming request body as JSON
 app.use(express.json());
 
-// add logging system
-app.use(morgan("tiny"));
+// add http request logging system
+app.use(morgan("dev"))
 
 /** 404 handler */
 
