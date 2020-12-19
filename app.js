@@ -3,9 +3,8 @@
 const express = require("express");
 
 const ExpressError = require("./helpers/expressError");
-
+// require the logging package
 const morgan = require("morgan");
-
 const app = express();
 
 app.use(express.json());
