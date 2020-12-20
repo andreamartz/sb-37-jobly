@@ -34,11 +34,18 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-// router.get("/:handle", async function (req, res, next) {
-//   try {
-//     const handle = req.params.handle;
-//     const results = await Company.findOne(handle);
-//     return res.
-//   }
-// })
+// router.post("/", async function(req, res, next) {
+
+// });
+
+router.get("/:handle", async function (req, res, next) {
+  try {
+    const handle = req.params.handle.toLowerCase();
+    const results = await Company.findOne(handle);
+    return res.json({company: results});
+  } catch(err) {
+    next(err);
+  }
+});
+
 module.exports = router;

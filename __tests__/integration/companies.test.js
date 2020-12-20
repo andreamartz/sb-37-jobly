@@ -26,7 +26,7 @@ beforeEach(async () => {
   INSERT INTO
     companies (handle, name, num_employees, description, logo_url)
     VALUES (
-      'target',
+      'TGT',
       'Target',
       '20000',
       'Lower-tier retail department store',
@@ -93,9 +93,24 @@ describe("GET /companies specifying invalid range of number of employees", () =>
 describe("GET /companies specifying duplicate parameter", () => {
   test("Throws error when max_employees specified twice", async () => {
     const res = await request(app).get(`/companies?max_employees=10000&max_employees=25000`);
-    console.log("res.body: ", res.body);
     expect(res.statusCode).toEqual(400);
     expect(res.body.status).toEqual(400);
     expect(res.body.message).toEqual("Cannot have duplicate parameters");
+  });
+});
+
+describe("GET /companies/:handle", () => {
+  test("Gets a single company matching on 'handle'", async () => {
+    const res = await request(app).get(`/companies/${comp_handle}`);
+    const company = res.body.company;
+    expect(res.statusCode).toEqual(200);
+    expect(company.handle).toEqual("TGT");
+  });
+});
+
+describe("GET /companies/:handle (invalid handle)", () => {
+  test("Throws 404 error when no match found for 'handle'", async () => {
+    const res = await request(app).get(`/companies/fds`);
+    expect(res.statusCode).toEqual(404);
   });
 });
