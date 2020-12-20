@@ -55,11 +55,39 @@ afterAll(async () => {
 describe("GET /companies", () => {
   test("Gets all companies", async () => {
     const res = await request(app).get(`/companies`);
-    console.log("res.body: ", res.body);
     const companies = res.body.companies;
     expect(res.statusCode).toEqual(200);
     expect(companies).toBeInstanceOf(Array);
     expect(companies).toHaveLength(2);
     expect(companies[0]).toHaveProperty("handle");
+  });
+});
+
+describe("GET /companies?search=targe", () => {
+  test("Gets info for company (Target) with name similar to 'targe'", async () => {
+    const res = await request(app).get(`/companies?search=targe`);
+    const companies = res.body.companies;
+    expect(res.statusCode).toEqual(200);
+    expect(companies[0].name).toEqual('Target');
+  });
+});
+
+describe("GET /companies specifying valid range of number of employees", () => {
+  test("Gets info for company when min_employees is less than max_employees", async () => {
+    const res = await request(app).get(`/companies?min_employees=10000&max_employees=25000`);
+    const companies = res.body.companies;
+    console.log("res.body: ", res.body);
+    expect(res.statusCode).toEqual(200);
+    expect(companies[0].name).toEqual('Target');
+  });
+});
+
+describe("GET /companies specifying invalid range of number of employees", () => {
+  test("Throws error when min_employees is greater than max_employees", async () => {
+    const res = await request(app).get(`/companies?min_employees=25000&max_employees=10000`);
+    console.log("res.body: ", res.body);
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.status).toEqual(400);
+    expect(res.body.message).toEqual("Max employees must be greater than min employees");
   });
 });
