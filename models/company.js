@@ -24,20 +24,23 @@ class Company {
       whereClauses.push(`LOWER(name) LIKE $${queryParameters.length}`);
     } 
 
-    // throw error if min_employees is larger than max_employees
-    if (data.min_employees && data.max_employees && +data.min_employees > +data.max_employees) {
+    if (data.min_employees > data.max_employees) {
       throw new ExpressError("Max employees must be greater than min employees", 400);
+    }
+
+    if (typeof data.search === "object" || typeof data.min_employees === "object" || typeof data.max_employees === "object") {
+      throw new ExpressError("Cannot have duplicate parameters", 400);
     }
 
     // if there is a min_employees query parameter
     if (data.min_employees) {
-      queryParameters.push(data.min_employees);
+      queryParameters.push(+data.min_employees);
       whereClauses.push(`num_employees > $${queryParameters.length}`)
     }
 
     // if there is a max_employees query parameter   
     if (data.max_employees) {
-      queryParameters.push(data.max_employees);
+      queryParameters.push(+data.max_employees);
       whereClauses.push(`num_employees < $${queryParameters.length}`)
     }
 

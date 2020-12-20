@@ -76,7 +76,6 @@ describe("GET /companies specifying valid range of number of employees", () => {
   test("Gets info for company when min_employees is less than max_employees", async () => {
     const res = await request(app).get(`/companies?min_employees=10000&max_employees=25000`);
     const companies = res.body.companies;
-    console.log("res.body: ", res.body);
     expect(res.statusCode).toEqual(200);
     expect(companies[0].name).toEqual('Target');
   });
@@ -85,9 +84,18 @@ describe("GET /companies specifying valid range of number of employees", () => {
 describe("GET /companies specifying invalid range of number of employees", () => {
   test("Throws error when min_employees is greater than max_employees", async () => {
     const res = await request(app).get(`/companies?min_employees=25000&max_employees=10000`);
-    console.log("res.body: ", res.body);
     expect(res.statusCode).toEqual(400);
     expect(res.body.status).toEqual(400);
     expect(res.body.message).toEqual("Max employees must be greater than min employees");
+  });
+});
+
+describe("GET /companies specifying duplicate parameter", () => {
+  test("Throws error when max_employees specified twice", async () => {
+    const res = await request(app).get(`/companies?max_employees=10000&max_employees=25000`);
+    console.log("res.body: ", res.body);
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.status).toEqual(400);
+    expect(res.body.message).toEqual("Cannot have duplicate parameters");
   });
 });
