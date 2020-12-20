@@ -10,14 +10,20 @@ const ExpressError = require("../helpers/expressError");
 
 router.get("/", async function (req, res, next) {
   try {
+    let {search, min_employees, max_employees} = req.query;
     const data = {};
-    if (req.query.search) {
-      let { search } = req.query;
+
+    if (search !== undefined) {
       search = search.toLowerCase();
-      console.log("search: ", search);
-      console.log("req.query: ", req.query);
       data.search = search;
-      console.log("data: ", data);
+    }
+
+    if (min_employees !== undefined) {
+      data.min_employees = min_employees;
+    }
+
+    if (max_employees !== undefined) {
+      data.max_employees = max_employees;
     }
 
     const results = await Company.findAll(data);
@@ -26,27 +32,13 @@ router.get("/", async function (req, res, next) {
   } catch (err) {
     return next(err);
   }
-
 });
 
-// router.get("/search", async function (req, res, next) {
-//   const results = await db.query(
-//     `SELECT 
-//       handle, 
-//       name, 
-//       num_employees, 
-//       description, 
-//       logo_url
-//     FROM companies
-//     WHERE handle=$1`, 
-//     [handle]
-//   );
-//   if (results.rows.length === 0) {
-//     throw { message: `There is no company with handle ${handle}`, status: 404 }
+// router.get("/:handle", async function (req, res, next) {
+//   try {
+//     const handle = req.params.handle;
+//     const results = await Company.findOne(handle);
+//     return res.
 //   }
-//   console.log("results: ", results);
-//   console.log("results.rows[0]: ", results.rows[0]);
-//   return res.json({company: results.rows[0]});
-// });
-
+// })
 module.exports = router;
