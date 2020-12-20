@@ -10,14 +10,20 @@ const ExpressError = require("../helpers/expressError");
 
 router.get("/", async function (req, res, next) {
   try {
+    let {search, min_employees, max_employees} = req.query;
+
     const data = {};
-    if (req.query.search) {
-      let { search } = req.query;
+    if (search !== undefined) {
       search = search.toLowerCase();
-      console.log("search: ", search);
-      console.log("req.query: ", req.query);
       data.search = search;
-      console.log("data: ", data);
+    }
+
+    if (min_employees !== undefined) {
+      data.min_employees = +min_employees;
+    }
+
+    if (max_employees !== undefined) {
+      data.max_employees = +max_employees;
     }
 
     const results = await Company.findAll(data);
@@ -26,7 +32,6 @@ router.get("/", async function (req, res, next) {
   } catch (err) {
     return next(err);
   }
-
 });
 
 // router.get("/search", async function (req, res, next) {
