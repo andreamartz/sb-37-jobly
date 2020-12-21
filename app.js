@@ -1,11 +1,14 @@
 /** Express app for jobly. */
 
 const express = require("express");
-
 const ExpressError = require("./helpers/expressError");
 // require the logging package
 const morgan = require("morgan");
+
 const app = express();
+
+// middleware to parse incoming request body as JSON
+app.use(express.json());
 
 const companyRoutes = require("./routes/companies");
 app.use("/companies", companyRoutes);

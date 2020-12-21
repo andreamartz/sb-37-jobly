@@ -99,6 +99,42 @@ describe("GET /companies specifying duplicate parameter", () => {
   });
 });
 
+describe("POST /companies", () => {
+  test("Creates a new company", async () => {
+    const res = await request(app)
+      .post(`/companies`)
+      .send({
+        company: {
+          handle: 'AMZN',
+          name: "Amazon",
+          num_employees: 50000,
+          description: 'Mega online retailer',
+          logo_url: 'http://amazon.com'
+        }
+      });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body.company).toHaveProperty("handle");
+    expect(res.body.company.name).toEqual("Amazon");
+  });
+});
+
+describe("POST /companies", () => {
+  test("Throws an error when company handle missing", async () => {
+    const res = await request(app)
+      .post(`/companies`)
+      .send({
+        company: {
+          name: "Amazon",
+          num_employees: 50000,
+          description: 'Mega online retailer',
+          logo_url: 'http://amazon.com'
+        }
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual(["instance.company requires property \"handle\""]);
+  });
+});
+
 describe("GET /companies/:handle", () => {
   test("Gets a single company matching on 'handle'", async () => {
     const res = await request(app).get(`/companies/${comp_handle}`);

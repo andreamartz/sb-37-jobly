@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "company": {
+                "handle": "BLK",
+                "name": "Blackrock",
+                "num_employees": 2100,
+                "description": "Financial Services and Broker",
+                "logo_url": "http://a.co/ejkljkl"
+            }
+        }
+    ],
+    "required": [
+        "company"
+    ],
+    "properties": {
+        "company": {
+            "$id": "#/properties/company",
+            "default": {},
+            "description": "An explanation about the purpose of this instance.",
+            "examples": [
+                {
+                    "handle": "BLK",
+                    "name": "Blackrock",
+                    "num_employees": 2100,
+                    "description": "Financial Services and Broker",
+                    "logo_url": "http://a.co/ejkljkl"
+                }
+            ],
+            "required": [
+                "handle",
+                "name"
+            ],
+            "title": "The company schema",
+            "type": "object",
+            "properties": {
+                "handle": {
+                    "$id": "#/properties/company/properties/handle",
+                    "type": "string",
+                    "title": "The handle schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "BLK"
+                    ]
+                },
+                "name": {
+                    "$id": "#/properties/company/properties/name",
+                    "type": "string",
+                    "title": "The name schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "Blackrock"
+                    ]
+                },
+                "num_employees": {
+                    "$id": "#/properties/company/properties/num_employees",
+                    "type": "integer",
+                    "title": "The num_employees schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        2100
+                    ]
+                },
+                "description": {
+                    "$id": "#/properties/company/properties/description",
+                    "type": "string",
+                    "title": "The description schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "Financial Services and Broker"
+                    ]
+                },
+                "logo_url": {
+                    "$id": "#/properties/company/properties/logo_url",
+                    "default": "",
+                    "description": "An explanation about the purpose of this instance.",
+                    "examples": [
+                        "http://a.co/ejkljkl"
+                    ],
+                    "title": "The logo_url schema",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true
+}
