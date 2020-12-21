@@ -58,28 +58,51 @@ class Company {
     return results.rows;
   }
 
+  static async findOne(handle) {
+    const results = await db.query(
+      `SELECT 
+        handle, 
+        name, 
+        num_employees, 
+        description, 
+        logo_url
+      FROM companies
+      WHERE LOWER(handle)=$1`, 
+      [handle]
+    );
 
+    if (results.rows.length === 0) {
+      throw { message: `There is no company with an handle '${handle}`, status: 404 }
+    }
+    return results.rows[0];
+  }
 
+  static async create(data) {
+    console.log("data: ", data);
+    const results = await db.query(
+      `INSERT INTO companies (
+        handle,
+        name, 
+        num_employees, 
+        description,
+        logo_url
+      )
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING handle,
+                name,
+                num_employees,
+                description,
+                logo_url`,
+      [ data.handle,
+        data.name,
+        data.num_employees,
+        data.description,
+        data.logo_url
+      ]
+    );
 
-  // static async findOne(handle) {
-  //   const results = await db.query(
-  //     `SELECT 
-  //       handle, 
-  //       name, 
-  //       num_employees, 
-  //       description, 
-  //       logo_url
-  //     FROM companies
-  //     WHERE handle=$1`, 
-  //     [handle]
-  //   );
-  //   if (results.rows.length === 0) {
-  //     throw { message: `There is no company with an handle '${handle}`, status: 404 }
-  //   }
-  //   console.log("results: ", results);
-  //   console.log("results.rows[0]: ", results.rows[0]);
-  //   return results.rows[0];
-  // }
+    return results.rows[0];
+  }
 }
 
 

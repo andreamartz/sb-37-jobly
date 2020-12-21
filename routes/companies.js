@@ -5,7 +5,8 @@ const express = require("express");
 const Company = require("../models/company");
 const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
-// const jsonschema = require("jsonschema");
+const jsonschema = require("jsonschema");
+const companySchemaNew = require("../schemas/companySchemaNew");
 
 
 router.get("/", async function (req, res, next) {
@@ -34,11 +35,40 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-// router.get("/:handle", async function (req, res, next) {
-//   try {
-//     const handle = req.params.handle;
-//     const results = await Company.findOne(handle);
-//     return res.
-//   }
-// })
+router.post("/", async function(req, res, next) {
+  try {
+    const result = jsonschema.validate(req.body, companySchemaNew);
+    console.log("result.valid: ", result.valid);
+
+    if (!result.valid) {
+      // pass validation errors to error handler
+      console.log("result.errors: ", result.errors);
+      const listOfErrors = result.errors.map(error => error.stack);
+      console.log("listOfErrors: ", listOfErrors);
+      const error = new ExpressError(listOfErrors, 400);
+      return next(error);
+    }
+
+    // at this point in the code, we know we have a valid payload
+    console.log("req.body: ", req.body);
+
+    let { company } = req.body;
+
+    company = await Company.create(req.body.company);
+    return res.status(201).json({company});
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/:handle", async function (req, res, next) {
+  try {
+    const handle = req.params.handle.toLowerCase();
+    const results = await Company.findOne(handle);
+    return res.json({company: results});
+  } catch(err) {
+    next(err);
+  }
+});
+
 module.exports = router;
