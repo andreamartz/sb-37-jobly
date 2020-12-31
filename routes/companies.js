@@ -4,10 +4,11 @@ const db = require("../db");
 const express = require("express");
 const Company = require("../models/company");
 const router = new express.Router();
-const ExpressError = require("../helpers/expressError");
-const jsonschema = require("jsonschema");
+// const ExpressError = require("../helpers/expressError");
+// const jsonschema = require("jsonschema");
 const companySchemaNew = require("../schemas/companySchemaNew");
-
+// const companySchemaUpdate = require("../schemas/companySchemaUpdate");
+const validateData = require("../helpers/validateData")
 
 router.get("/", async function (req, res, next) {
   try {
