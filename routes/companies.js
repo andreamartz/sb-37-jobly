@@ -62,7 +62,7 @@ router.get("/:handle", async function (req, res, next) {
     const results = await Company.findOne(handle);
     return res.json({company: results});
   } catch(err) {
-    next(err);
+    return next(err);
   }
 });
 
