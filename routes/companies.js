@@ -4,10 +4,11 @@ const db = require("../db");
 const express = require("express");
 const Company = require("../models/company");
 const router = new express.Router();
-const ExpressError = require("../helpers/expressError");
-const jsonschema = require("jsonschema");
+// const ExpressError = require("../helpers/expressError");
+// const jsonschema = require("jsonschema");
 const companySchemaNew = require("../schemas/companySchemaNew");
-
+// const companySchemaUpdate = require("../schemas/companySchemaUpdate");
+const validateData = require("../helpers/validateData")
 
 router.get("/", async function (req, res, next) {
   try {
@@ -37,27 +38,21 @@ router.get("/", async function (req, res, next) {
 
 router.post("/", async function(req, res, next) {
   try {
-    const result = jsonschema.validate(req.body, companySchemaNew);
-    console.log("result.valid: ", result.valid);
+    // validate data
+    const outcome = validateData(req.body, companySchemaNew);
 
-    if (!result.valid) {
-      // pass validation errors to error handler
-      console.log("result.errors: ", result.errors);
-      const listOfErrors = result.errors.map(error => error.stack);
-      console.log("listOfErrors: ", listOfErrors);
-      const error = new ExpressError(listOfErrors, 400);
-      return next(error);
+    // pass any validation errors to error handler
+    if (outcome instanceof Error) {
+      return next(outcome);
     }
 
-    // at this point in the code, we know we have a valid payload
-    console.log("req.body: ", req.body);
+    // at this point, the request data have been confirmed valid
 
     let { company } = req.body;
-
-    company = await Company.create(req.body.company);
+    company = await Company.create(company);
     return res.status(201).json({company});
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -67,7 +62,7 @@ router.get("/:handle", async function (req, res, next) {
     const results = await Company.findOne(handle);
     return res.json({company: results});
   } catch(err) {
-    next(err);
+    return next(err);
   }
 });
 
