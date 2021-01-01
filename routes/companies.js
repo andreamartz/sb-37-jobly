@@ -40,11 +40,11 @@ router.get("/", async function (req, res, next) {
 router.post("/", async function(req, res, next) {
   try {
     // validate data
-    const outcome = validateData(req.body, companySchemaNew);
+    const validationOutcome = validateData(req.body, companySchemaNew);
 
     // pass any validation errors to error handler
-    if (outcome instanceof Error) {
-      return next(outcome);
+    if (validationOutcome instanceof Error) {
+      return next(validationOutcome);
     }
 
     // at this point, the request data have been confirmed valid
