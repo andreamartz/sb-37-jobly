@@ -67,4 +67,41 @@ router.get("/:handle", async function (req, res, next) {
   }
 });
 
+router.patch("/:handle", async function (req, res, next) {
+  try {
+    const handle = req.params.handle.toUpperCase();
+    console.log("REQ.BODY: ", req.body);
+    const companyData = req.body.company;
+    companyData.handle = companyData.handle.toUpperCase();
+    
+    // throw error if user tries to update the handle
+    if (companyData.handle.toUpperCase() !== handle) {
+      throw new ExpressError('You cannot change the handle.', 400);
+    }
+
+    // validate the data on the request body
+    const validationOutcome = validateData(req.body, companySchemaUpdate);
+
+    // pass any validation errors to error handler
+    if (validationOutcome instanceof Error) {
+      return next(validationOutcome);
+    }
+
+    // at this point, the request data have been confirmed valid
+    // do the update in the database; save to 'results' variable
+    const company = await Company.update(handle, companyData);
+
+    // check the length of the results array; if 0, throw new ExpressError("No such company was found", 404);
+    if (company.length === 0) {
+      throw new ExpressError("No such company was found", 404);
+    }
+    
+    // if results.rows is longer than 1, return res.json(results.rows[0]);
+
+    return res.json({company: company});
+  } catch (err) {
+      return next(err);
+  }
+});
+
 module.exports = router;
