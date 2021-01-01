@@ -7,8 +7,9 @@ const router = new express.Router();
 // const ExpressError = require("../helpers/expressError");
 // const jsonschema = require("jsonschema");
 const companySchemaNew = require("../schemas/companySchemaNew");
-// const companySchemaUpdate = require("../schemas/companySchemaUpdate");
-const validateData = require("../helpers/validateData")
+const companySchemaUpdate = require("../schemas/companySchemaUpdate");
+const validateData = require("../helpers/validateData");
+const ExpressError = require("../helpers/expressError");
 
 router.get("/", async function (req, res, next) {
   try {
