@@ -60,6 +60,7 @@ class Company {
   }
 
   static async findOne(handle) {
+    handle = handle.toUpperCase();
     const results = await db.query(
       `SELECT 
         handle, 
@@ -68,12 +69,12 @@ class Company {
         description, 
         logo_url
       FROM companies
-      WHERE LOWER(handle)=$1`, 
+      WHERE UPPER(handle)=$1`, 
       [handle]
     );
 
     if (results.rows.length === 0) {
-      throw { message: `There is no company with an handle '${handle}`, status: 404 }
+      throw { message: `There is no company with a handle '${handle}`, status: 404 }
     }
     return results.rows[0];
   }
@@ -108,22 +109,27 @@ class Company {
     const { query, values } = sqlForPartialUpdate('companies', data, 'handle', handle);
     const results = await db.query(
       query, values);
+    if (results.rows.length === 0) {
+      throw new ExpressError('No such company was found', 404);
+    }
     return results.rows[0];
   }
 
   static async remove(handle) {
+    handle = handle.toUpperCase();
     const result = await db.query(
       `DELETE FROM companies 
-      WHERE handle = $1
+      WHERE UPPER(handle) = $1
       RETURNING 
         handle`,
       [handle]
     );
+
     if (result.rows.length === 0) {
-      throw new Express
-    }     
+      throw new ExpressError('No such company was found', 404);
+    }
+    return result.rows[0];
   }
 }
-
 
 module.exports = Company;

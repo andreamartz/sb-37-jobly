@@ -63,7 +63,7 @@ describe("GET /companies", () => {
   });
 });
 
-describe("GET /companies?search=targe", () => {
+describe("GET /companies?search", () => {
   test("Gets info for company (Target) with name similar to 'targe'", async () => {
     const res = await request(app).get(`/companies?search=targe`);
     const companies = res.body.companies;
@@ -72,26 +72,22 @@ describe("GET /companies?search=targe", () => {
   });
 });
 
-describe("GET /companies specifying valid range of number of employees", () => {
+describe("GET /companies specifying range of number of employees", () => {
   test("Gets info for company when min_employees is less than max_employees", async () => {
     const res = await request(app).get(`/companies?min_employees=10000&max_employees=25000`);
     const companies = res.body.companies;
     expect(res.statusCode).toEqual(200);
     expect(companies[0].name).toEqual('Target');
   });
-});
 
-describe("GET /companies specifying invalid range of number of employees", () => {
   test("Throws error when min_employees is greater than max_employees", async () => {
     const res = await request(app).get(`/companies?min_employees=25000&max_employees=10000`);
     expect(res.statusCode).toEqual(400);
     expect(res.body.status).toEqual(400);
     expect(res.body.message).toEqual("Max employees must be greater than min employees");
   });
-});
 
-describe("GET /companies specifying duplicate parameter", () => {
-  test("Throws error when max_employees specified twice", async () => {
+  test("Throws error when max_employees is specified twice", async () => {
     const res = await request(app).get(`/companies?max_employees=10000&max_employees=25000`);
     expect(res.statusCode).toEqual(400);
     expect(res.body.status).toEqual(400);
@@ -161,8 +157,6 @@ describe("PATCH /companies/:handle", () => {
           num_employees: 19000
         }
       });
-    // console.log("RES: ", res);
-    // console.log("RES.BODY: ", res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual(
       { company: 
@@ -175,7 +169,30 @@ describe("PATCH /companies/:handle", () => {
       }
     );
     const getCompRes = await request(app).get(`/companies/tgt`);
-    console.log("getCompRes: ", getCompRes);
     expect(getCompRes.body.company.num_employees).toEqual(19000);
+  });
+
+  test("Prevents adding unwanted field to company", async () => {
+    const res = await request(app)
+    .patch(`/companies/TGT`)
+    .send({ 
+      company: {
+        handle: 'TGT',
+        num_employees: 19000,
+        cat: 'Goldie'
+      }
+    });
+    expect(res.statusCode).toEqual(400);
+  })
+});
+
+describe("DELETE /companies/:handle", () => {
+  test("Deletes a company", async () => {
+    const res = await request(app)
+      .delete(`/companies/TGT`);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(
+      { message:  'Company deleted' }
+    )
   });
 });
