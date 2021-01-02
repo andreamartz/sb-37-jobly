@@ -96,8 +96,8 @@ router.patch("/:handle", async function (req, res, next) {
       return next(err);
   }
 });
-    
-    // if results.rows is longer than 1, return res.json(results.rows[0]);
+
+router.delete("/:handle", async function (req, res, next) {
 
     return res.json({company: company});
   } catch (err) {
