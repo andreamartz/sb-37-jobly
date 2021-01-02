@@ -161,8 +161,6 @@ describe("PATCH /companies/:handle", () => {
           num_employees: 19000
         }
       });
-    // console.log("RES: ", res);
-    // console.log("RES.BODY: ", res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual(
       { company: 
@@ -175,7 +173,6 @@ describe("PATCH /companies/:handle", () => {
       }
     );
     const getCompRes = await request(app).get(`/companies/tgt`);
-    console.log("getCompRes: ", getCompRes);
     expect(getCompRes.body.company.num_employees).toEqual(19000);
   });
 });
