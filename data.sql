@@ -14,6 +14,15 @@ CREATE TABLE companies (
   logo_url TEXT
 );
 
+CREATE TABLE jobs (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  salary REAL NOT NULL,
+  equity SMALLINT NOT NULL CHECK (equity <= 1),
+  company_handle TEXT NOT NULL REFERENCES companies ON DELETE CASCADE,
+  date_posted TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO companies
   (handle, name, num_employees, description, logo_url)
 VALUES
