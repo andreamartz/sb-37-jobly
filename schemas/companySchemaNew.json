@@ -92,8 +92,8 @@
                     "format": "uri"
                 }
             },
-            "additionalProperties": true
+            "additionalProperties": false
         }
     },
-    "additionalProperties": true
+    "additionalProperties": false
 }
