@@ -108,6 +108,9 @@ class Company {
     const { query, values } = sqlForPartialUpdate('companies', data, 'handle', handle);
     const results = await db.query(
       query, values);
+    if (results.rows.length === 0) {
+      throw new ExpressError('No such company was found', 404);
+    }
     return results.rows[0];
   }
 
