@@ -98,8 +98,14 @@ router.patch("/:handle", async function (req, res, next) {
 });
 
 router.delete("/:handle", async function (req, res, next) {
+  try {
+    const handle = req.params.handle.toUpperCase();
+    
+    // do the update in the database; save to 'company' variable
+    const company = await Company.remove(handle);
+    console.log("COMPANY: ", company);
 
-    return res.json({company: company});
+    return res.json({message: "Company deleted"});
   } catch (err) {
       return next(err);
   }
