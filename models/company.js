@@ -116,18 +116,20 @@ class Company {
   }
 
   static async remove(handle) {
+    handle = handle.toUpperCase();
     const result = await db.query(
       `DELETE FROM companies 
-      WHERE handle = $1
+      WHERE UPPER(handle) = $1
       RETURNING 
         handle`,
       [handle]
     );
+
     if (result.rows.length === 0) {
-      throw new Express
-    }     
+      throw new ExpressError('No such company was found', 404);
+    }
+    return result.rows[0];
   }
 }
-
 
 module.exports = Company;
