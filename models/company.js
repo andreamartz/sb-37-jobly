@@ -1,5 +1,6 @@
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
+const sqlForPartialUpdate = require("../helpers/partialUpdate")
 
 /** Collection of related methods for companies */
 
@@ -78,7 +79,6 @@ class Company {
   }
 
   static async create(data) {
-    console.log("data: ", data);
     const results = await db.query(
       `INSERT INTO companies (
         handle,
@@ -102,6 +102,26 @@ class Company {
     );
 
     return results.rows[0];
+  }
+  
+  static async update(handle, data) {
+    const { query, values } = sqlForPartialUpdate('companies', data, 'handle', handle);
+    const results = await db.query(
+      query, values);
+    return results.rows[0];
+  }
+
+  static async remove(handle) {
+    const result = await db.query(
+      `DELETE FROM companies 
+      WHERE handle = $1
+      RETURNING 
+        handle`,
+      [handle]
+    );
+    if (result.rows.length === 0) {
+      throw new Express
+    }     
   }
 }
 

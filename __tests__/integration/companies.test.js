@@ -31,7 +31,7 @@ beforeEach(async () => {
       '20000',
       'Lower-tier retail department store',
       'https://placekitten.com/200/300'),
-      ('knapp',
+      ('KNAPP',
       'Knapp & Associates',
       '0',
       'Management consulting',
@@ -148,5 +148,34 @@ describe("GET /companies/:handle (invalid handle)", () => {
   test("Throws 404 error when no match found for 'handle'", async () => {
     const res = await request(app).get(`/companies/fds`);
     expect(res.statusCode).toEqual(404);
+  });
+});
+
+describe("PATCH /companies/:handle", () => {
+  test("Updates a company with data provided", async () => {
+    const res = await request(app)
+      .patch(`/companies/TGT`)
+      .send({ 
+        company: {
+          handle: 'TGT',
+          num_employees: 19000
+        }
+      });
+    // console.log("RES: ", res);
+    // console.log("RES.BODY: ", res.body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(
+      { company: 
+        { handle: 'TGT',
+          name: 'Target',
+          description: 'Lower-tier retail department store',
+          logo_url: 'https://placekitten.com/200/300', 
+          num_employees: 19000
+        }
+      }
+    );
+    const getCompRes = await request(app).get(`/companies/tgt`);
+    console.log("getCompRes: ", getCompRes);
+    expect(getCompRes.body.company.num_employees).toEqual(19000);
   });
 });
