@@ -49,7 +49,7 @@ router.post("/", async function(req, res, next) {
 
     let { company } = req.body;
     company = await Company.create(company);
-    return res.status(201).json({company});
+    return res.status(201).json({ company });
   } catch (err) {
     return next(err);
   }
