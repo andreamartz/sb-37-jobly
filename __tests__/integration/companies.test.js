@@ -189,3 +189,14 @@ describe("PATCH /companies/:handle", () => {
     expect(res.statusCode).toEqual(400);
   })
 });
+
+describe("DELETE /companies/:handle", () => {
+  test("Deletes a company", async () => {
+    const res = await request(app)
+      .delete(`/companies/TGT`);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(
+      { message:  'Company deleted' }
+    )
+  });
+});
