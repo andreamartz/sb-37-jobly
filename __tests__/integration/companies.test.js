@@ -175,4 +175,17 @@ describe("PATCH /companies/:handle", () => {
     const getCompRes = await request(app).get(`/companies/tgt`);
     expect(getCompRes.body.company.num_employees).toEqual(19000);
   });
+
+  test("Prevents adding unwanted field to company", async () => {
+    const res = await request(app)
+    .patch(`/companies/TGT`)
+    .send({ 
+      company: {
+        handle: 'TGT',
+        num_employees: 19000,
+        cat: 'Goldie'
+      }
+    });
+    expect(res.statusCode).toEqual(400);
+  })
 });
