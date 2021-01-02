@@ -60,6 +60,7 @@ class Company {
   }
 
   static async findOne(handle) {
+    handle = handle.toUpperCase();
     const results = await db.query(
       `SELECT 
         handle, 
@@ -68,12 +69,12 @@ class Company {
         description, 
         logo_url
       FROM companies
-      WHERE LOWER(handle)=$1`, 
+      WHERE UPPER(handle)=$1`, 
       [handle]
     );
 
     if (results.rows.length === 0) {
-      throw { message: `There is no company with an handle '${handle}`, status: 404 }
+      throw { message: `There is no company with a handle '${handle}`, status: 404 }
     }
     return results.rows[0];
   }
