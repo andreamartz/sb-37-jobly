@@ -94,7 +94,8 @@ class Company {
                 num_employees,
                 description,
                 logo_url`,
-      [ data.handle,
+      [ 
+        data.handle,
         data.name,
         data.num_employees,
         data.description,
