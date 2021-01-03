@@ -14,6 +14,14 @@ beforeEach(async () => {
   await beforeEachHook(TEST_DATA);
 });
 
+afterEach(async () => {
+  await afterEachHook();
+});
+
+afterAll(async () => {
+  await afterAllHook();
+});
+
 describe("GET /jobs", () => {
   test("Gets info for a job", async () => {
     const res = await request(app).get(`/jobs`);
@@ -73,10 +81,3 @@ describe("POST /jobs", () => {
   });
 });
 
-afterEach(async () => {
-  await afterEachHook();
-});
-
-afterAll(async () => {
-  await afterAllHook();
-});
