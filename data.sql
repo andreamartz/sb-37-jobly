@@ -44,7 +44,7 @@ INSERT INTO companies
 VALUES
   ('NOW', 'Service Now', 695, 'startup business services company', 'https://placekitten.com/200/300');
 
-  INSERT INTO companies
+INSERT INTO companies
   (handle, name, num_employees, description, logo_url)
 VALUES
   ('NFLX', 'Netflix', 729, 'video streaming service', 'https://placekitten.com/200/300');
