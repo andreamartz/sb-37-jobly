@@ -16,6 +16,7 @@ class Job {
     const BASE_QUERY = 'SELECT title, company_handle FROM jobs';
     const whereClauses = [];
     let whereString = "";
+    // Use query parameters to prevent SQL injection
     const queryParameters = [];
     let query;
 
