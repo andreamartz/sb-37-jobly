@@ -35,6 +35,16 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+router.get("/:handle", async function (req, res, next) {
+  try {
+    const handle = req.params.handle.toUpperCase();
+    const results = await Company.findOne(handle);
+    return res.json({company: results});
+  } catch(err) {
+    return next(err);
+  }
+});
+
 router.post("/", async function(req, res, next) {
   try {
     // validate data
@@ -51,16 +61,6 @@ router.post("/", async function(req, res, next) {
     company = await Company.create(company);
     return res.status(201).json({ company });
   } catch (err) {
-    return next(err);
-  }
-});
-
-router.get("/:handle", async function (req, res, next) {
-  try {
-    const handle = req.params.handle.toLowerCase();
-    const results = await Company.findOne(handle);
-    return res.json({company: results});
-  } catch(err) {
     return next(err);
   }
 });
