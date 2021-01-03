@@ -38,11 +38,11 @@ class Job {
     console.log("WHERECLAUSES: ", whereClauses);
     console.log("QUERYPARAMETERS: ", queryParameters);
 
-    // // if there is a min_equity query parameter   
-    // if (data.min_equity) {
-    //   queryParameters.push(+data.min_equity);
-    //   whereClauses.push(`equity < $${queryParameters.length}`)
-    // }
+    // if there is a min_equity query parameter   
+    if (data.min_equity) {
+      queryParameters.push(+data.min_equity);
+      whereClauses.push(`equity > $${queryParameters.length}`)
+    }
 
     // ***** Build Query *****
     if (whereClauses.length > 0) {
