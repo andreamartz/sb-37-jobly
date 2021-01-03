@@ -1,5 +1,5 @@
 const db = require("../db");
-// const ExpressError = require("../helpers/expressError");
+const ExpressError = require("../helpers/expressError");
 // const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 
@@ -16,6 +16,7 @@ class Job {
     const BASE_QUERY = 'SELECT title, company_handle FROM jobs';
     const whereClauses = [];
     let whereString = "";
+    // Use query parameters to prevent SQL injection
     const queryParameters = [];
     let query;
 
@@ -35,8 +36,6 @@ class Job {
       queryParameters.push(+data.min_salary);
       whereClauses.push(`salary > $${queryParameters.length}`);
     }
-    console.log("WHERECLAUSES: ", whereClauses);
-    console.log("QUERYPARAMETERS: ", queryParameters);
 
     // if there is a min_equity query parameter   
     if (data.min_equity) {
@@ -52,8 +51,6 @@ class Job {
     whereString = whereString + whereClauses.join(" AND ");
     query = BASE_QUERY + whereString + ' ORDER BY date_posted';
     // }
-    console.log("WHERESTRING: ", whereString);
-    console.log("QUERY: ", query);
 
     const results = await db.query(query, queryParameters);
 
@@ -61,7 +58,28 @@ class Job {
   }
 
   static async findOne(id) {
+    id = +id;
+    const jobRes = await db.query(`
+      SELECT id, title, salary, equity, company_handle, date_posted 
+      FROM jobs
+      WHERE id = $1`,
+      [ id ]
+    );
+    const job = jobRes.rows[0];
+    if (!job) {
+      throw new ExpressError(`No job found with id '${id}'`, 404);
+    }
 
+    const compRes = await db.query(`
+      SELECT handle, name, num_employees, description, logo_url
+      FROM companies
+      WHERE handle = $1`,
+      [ job.company_handle ]
+    );
+    const company = compRes.rows[0];
+    job.company = company;
+    console.log("JOB FROM DB: ", job);
+    return job;
   }
 
   static async create(data) {

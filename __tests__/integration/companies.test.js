@@ -2,41 +2,60 @@
 
 const request =  require("supertest");
 const app = require("../../app");
-const db = require("../../db");
-const { DB_URI } = require("../../config");
+// const db = require("../../db");
+// const { DB_URI } = require("../../config");
 
-process.env.NODE_ENV = "test"
+// process.env.NODE_ENV = "test"
 
-// handle of sample company
-let comp_handle;
+// // handle of sample company
+// let comp_handle;
+
+const {
+  TEST_DATA,
+  afterEachHook,
+  beforeEachHook,
+  afterAllHook
+} = require("./config");
+
+// beforeEach(async () => {
+//   await db.query(`DELETE FROM companies`);
+//   await db.query(`DELETE FROM jobs`);
+
+//   // set up a company
+//   let company = await db.query(`
+//   INSERT INTO
+//     companies (handle, name, num_employees, description, logo_url)
+//     VALUES (
+//       'TGT',
+//       'Target',
+//       '20000',
+//       'Lower-tier retail department store',
+//       'https://placekitten.com/200/300')
+//     RETURNING handle, name, num_employees,
+//     description, logo_url`
+//   );
+//   comp_handle = company.rows[0].handle;
+// });
+
+// afterEach(async () => {
+//   await db.query("DELETE FROM companies");
+//   await db.query(`DELETE FROM jobs`);
+// });
+
+// afterAll(async () => {
+//   await db.end();
+// });
 
 beforeEach(async () => {
-  await db.query(`DELETE FROM companies`);
-  await db.query(`DELETE FROM jobs`);
-
-  // set up a company
-  let company = await db.query(`
-  INSERT INTO
-    companies (handle, name, num_employees, description, logo_url)
-    VALUES (
-      'TGT',
-      'Target',
-      '20000',
-      'Lower-tier retail department store',
-      'https://placekitten.com/200/300')
-    RETURNING handle, name, num_employees,
-    description, logo_url`
-  );
-  comp_handle = company.rows[0].handle;
+  await beforeEachHook(TEST_DATA);
 });
 
 afterEach(async () => {
-  await db.query("DELETE FROM companies");
-  await db.query(`DELETE FROM jobs`);
+  await afterEachHook();
 });
 
-afterAll(async () => {
-  await db.end();
+afterAllHook(async () => {
+  await afterAllHook();
 });
 
 describe("GET /companies", () => {
@@ -51,7 +70,7 @@ describe("GET /companies", () => {
 });
 
 describe("GET /companies?search", () => {
-  test("Gets info for company (Target) with name similar to 'targe'", async () => {
+  test("Gets info for company with name similar to search term", async () => {
     const res = await request(app).get(`/companies?search=targe`);
     const companies = res.body.companies;
     expect(res.statusCode).toEqual(200);
@@ -120,7 +139,7 @@ describe("POST /companies", () => {
 
 describe("GET /companies/:handle", () => {
   test("Gets a single company matching on 'handle'", async () => {
-    const res = await request(app).get(`/companies/${comp_handle}`);
+    const res = await request(app).get(`/companies/${TEST_DATA.currentCompany.handle}`);
     const company = res.body.company;
     expect(res.statusCode).toEqual(200);
     expect(company.handle).toEqual("TGT");
