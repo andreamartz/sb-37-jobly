@@ -61,8 +61,7 @@ class Company {
   }
 
   static async findOne(handle) {
-    handle = handle.toUpperCase();
-    const results = await db.query(
+    const compRes = await db.query(
       `SELECT 
         handle, 
         name, 
@@ -74,10 +73,20 @@ class Company {
       [handle]
     );
 
-    if (results.rows.length === 0) {
-      throw { message: `There is no company with a handle '${handle}`, status: 404 }
+    if (compRes.rows.length === 0) {
+      throw new ExpressError(`There is no company with a handle '${handle}'`, 404);
     }
-    return results.rows[0];
+    const company = compRes.rows[0];
+
+    const jobRes = await db.query(`
+      SELECT id, title, salary, equity, company_handle, date_posted
+      FROM jobs
+      WHERE company_handle = $1`,
+      [ company.handle ]
+    );
+    const jobs = jobRes.rows;
+    company.jobs = jobs;
+    return company;
   }
 
   static async create(data) {
