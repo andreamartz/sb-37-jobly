@@ -1,6 +1,6 @@
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
-const sqlForPartialUpdate = require("../helpers/partialUpdate")
+const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 /** Collection of related methods for companies */
 
@@ -94,7 +94,8 @@ class Company {
                 num_employees,
                 description,
                 logo_url`,
-      [ data.handle,
+      [ 
+        data.handle,
         data.name,
         data.num_employees,
         data.description,
