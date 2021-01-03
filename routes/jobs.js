@@ -6,9 +6,8 @@ const Job = require("../models/job");
 const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
 const jobSchemaNew = require("../schemas/jobSchemaNew");
-// const jobSchemaUpdate = require("../schemas/jobSchemaUpdate");
+const jobSchemaUpdate = require("../schemas/jobSchemaUpdate");
 const validateData = require("../helpers/validateData");
-
 
 router.get("/", async function (req, res, next) {
   try {
@@ -63,6 +62,37 @@ router.post("/", async function(req, res, next) {
 
     job = await Job.create(job);
     return res.status(201).json({ job });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.patch("/:id", async function (req, res, next) {
+  try {
+    const id = req.params.id;
+    const jobData = req.body.job;
+    
+    // throw error if id is not found for any job
+    const jobCheck = await Job.findOne(id);
+
+    // throw error if user tries to update the id
+    if (jobData.id  && jobData.id !== +id) {
+      throw new ExpressError('You cannot change the job id.', 400);
+    }
+
+    // validate the data on the request body
+    const validationOutcome = validateData(req.body, jobSchemaUpdate);
+
+    // pass any validation errors to error handler
+    if (validationOutcome instanceof Error) {
+      return next(validationOutcome);
+    }
+
+    // at this point, the request data have been confirmed valid
+    // do the update in the database; save to 'job' variable
+    const job = await Job.update(id, jobData);
+
+    return res.json({ job });
   } catch (err) {
     return next(err);
   }
