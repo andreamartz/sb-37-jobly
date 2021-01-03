@@ -5,7 +5,6 @@ const app = require("../../app");
 const db = require("../../db");
 const { DB_URI } = require("../../config");
 
-console.log("DB_URI:", DB_URI);
 process.env.NODE_ENV = "test"
 
 // handle of sample job
@@ -38,7 +37,7 @@ beforeEach(async () => {
     VALUES (
       'QA Analyst',
       35000,
-      0,
+      0.001,
       'TGT')
     RETURNING id, title, salary, equity, company_handle, date_posted`
   );
@@ -52,6 +51,27 @@ afterEach(async () => {
 
 afterAll(async () => {
   await db.end();
+});
+
+describe("GET /jobs", () => {
+  test("Gets info for a job", async () => {
+    const res = await request(app).get(`/jobs`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
+  test("Gets info for job when min_salary is specified", async () => {
+    const res = await request(app).get(`/jobs?min_salary=30000`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
+  test("Gets info for job when min_equity is specified", async () => {
+    const res = await request(app).get(`/jobs?min_equity=0.0001`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
 });
 
 describe("POST /jobs", () => {
@@ -71,9 +91,8 @@ describe("POST /jobs", () => {
     expect(resNewJob.statusCode).toEqual(201);
     expect(resNewJob.body.job).toHaveProperty("id");
     expect(resNewJob.body.job.title).toEqual("QA Analyst");
-    // const resJobs = await request(app).get(`/jobs`);
-    // console.log("RESJOBS: ", resJobs);
-    // expect(resJobs.body).toHaveLength(2);
+    const resJobs = await request(app).get(`/jobs`);
+    expect(resJobs.body.jobs).toHaveLength(2);
   });
   
   test("Prevents creating a job with extra fields", async () => {
