@@ -54,6 +54,21 @@ afterAll(async () => {
   await db.end();
 });
 
+describe("GET /jobs", () => {
+  test("Gets info for a job", async () => {
+    const res = await request(app).get(`/jobs`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
+  test("Gets info for job when min_salary is specified", async () => {
+    const res = await request(app).get(`/jobs?min_salary=30000`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
+});
+
 describe("POST /jobs", () => {
   test("Creates a new job", async () => {
     const resNewJob = await request(app)
