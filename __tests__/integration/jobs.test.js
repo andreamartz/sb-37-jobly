@@ -38,7 +38,7 @@ beforeEach(async () => {
     VALUES (
       'QA Analyst',
       35000,
-      0,
+      0.001,
       'TGT')
     RETURNING id, title, salary, equity, company_handle, date_posted`
   );
@@ -63,6 +63,12 @@ describe("GET /jobs", () => {
   });
   test("Gets info for job when min_salary is specified", async () => {
     const res = await request(app).get(`/jobs?min_salary=30000`);
+    const jobs = res.body.jobs;
+    expect(res.statusCode).toEqual(200);
+    expect(jobs[0].title).toEqual('QA Analyst');
+  });
+  test("Gets info for job when min_equity is specified", async () => {
+    const res = await request(app).get(`/jobs?min_equity=0.0001`);
     const jobs = res.body.jobs;
     expect(res.statusCode).toEqual(200);
     expect(jobs[0].title).toEqual('QA Analyst');
