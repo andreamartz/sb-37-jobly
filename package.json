@@ -7,6 +7,12 @@
     "test": "jest",
     "start": "node server.js"
   },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "config.js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andreamartz/sb-37-jobly.git"
