@@ -61,7 +61,28 @@ class Job {
   }
 
   static async findOne(id) {
+    id = +id;
+    const jobRes = await db.query(`
+      SELECT id, title, salary, equity, company_handle, date_posted 
+      FROM jobs
+      WHERE id = $1`,
+      [ id ]
+    );
+    const job = jobRes.rows[0];
+    if (!job) {
+      throw new ExpressError(`No job found with id '${id}'`, 404);
+    }
 
+    const compRes = await db.query(`
+      SELECT handle, name, num_employees, description, logo_url
+      FROM companies
+      WHERE handle = $1`,
+      [ job.company_handle ]
+    );
+    const company = compRes.rows[0];
+    job.company = company;
+    console.log("JOB FROM DB: ", job);
+    return job;
   }
 
   static async create(data) {
