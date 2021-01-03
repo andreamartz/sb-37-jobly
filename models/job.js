@@ -1,6 +1,6 @@
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
-// const sqlForPartialUpdate = require("../helpers/partialUpdate");
+const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 
 /** Collection of related methods for jobs */
@@ -78,7 +78,6 @@ class Job {
     );
     const company = compRes.rows[0];
     job.company = company;
-    console.log("JOB FROM DB: ", job);
     return job;
   }
 
@@ -106,5 +105,18 @@ class Job {
     );
     return results.rows[0];
   }
+
+  static async update(id, data) {
+    id = +id;
+    const { query, values } = sqlForPartialUpdate('jobs', data, 'id', id);
+    const results = await db.query(
+      query, values);
+    if (results.rows.length === 0) {
+      throw new ExpressError('No such job was found', 404);
+    }
+    console.log("RESULTS.ROWS[0]: ", results.rows[0]);
+    return results.rows[0];
+  }
+}
 
   module.exports = Job;
