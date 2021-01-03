@@ -36,6 +36,17 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+router.get("/:id", async function (req, res, next) {
+  try {
+    const id = req.params.id;
+    const job = await Job.findOne(id);
+    console.log("JOB FROM ROUTE: ", job);
+    return res.json({ job });
+  } catch (err) {
+    return next (err);
+  }
+});
+
 router.post("/", async function(req, res, next) {
   try {
     // validate data
