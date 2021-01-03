@@ -1,4 +1,4 @@
-/** Integration tests for books route */
+/** Integration tests for companies routes */
 
 const request =  require("supertest");
 const app = require("../../app");
@@ -11,18 +11,11 @@ process.env.NODE_ENV = "test"
 let comp_handle;
 
 beforeEach(async () => {
-  // 
-  await db.query(`DROP TABLE IF EXISTS companies`);
-  await db.query(`
-    CREATE TABLE companies (
-      handle TEXT PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE,
-      num_employees INTEGER,
-      description TEXT,
-      logo_url TEXT
-    )
-  `);
-  let result = await db.query(`
+  await db.query(`DELETE FROM companies`);
+  await db.query(`DELETE FROM jobs`);
+
+  // set up a company
+  let company = await db.query(`
   INSERT INTO
     companies (handle, name, num_employees, description, logo_url)
     VALUES (
@@ -30,22 +23,16 @@ beforeEach(async () => {
       'Target',
       '20000',
       'Lower-tier retail department store',
-      'https://placekitten.com/200/300'),
-      ('KNAPP',
-      'Knapp & Associates',
-      '0',
-      'Management consulting',
-      'https://placekitten.com/200/300'
-      )
+      'https://placekitten.com/200/300')
     RETURNING handle, name, num_employees,
     description, logo_url`
   );
-  comp_handle = result.rows[0].handle;
+  comp_handle = company.rows[0].handle;
 });
 
 afterEach(async () => {
-  // await db.query("DELETE FROM companies");
-  await db.query(`DROP TABLE IF EXISTS companies`);
+  await db.query("DELETE FROM companies");
+  await db.query(`DELETE FROM jobs`);
 });
 
 afterAll(async () => {
@@ -58,7 +45,7 @@ describe("GET /companies", () => {
     const companies = res.body.companies;
     expect(res.statusCode).toEqual(200);
     expect(companies).toBeInstanceOf(Array);
-    expect(companies).toHaveLength(2);
+    expect(companies).toHaveLength(1);
     expect(companies[0]).toHaveProperty("handle");
   });
 });
