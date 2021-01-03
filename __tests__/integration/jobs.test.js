@@ -92,9 +92,9 @@ describe("POST /jobs", () => {
     expect(resNewJob.statusCode).toEqual(201);
     expect(resNewJob.body.job).toHaveProperty("id");
     expect(resNewJob.body.job.title).toEqual("QA Analyst");
-    // const resJobs = await request(app).get(`/jobs`);
-    // console.log("RESJOBS: ", resJobs);
-    // expect(resJobs.body).toHaveLength(2);
+    const resJobs = await request(app).get(`/jobs`);
+    console.log("RESJOBS: ", resJobs);
+    expect(resJobs.body.jobs).toHaveLength(2);
   });
   
   test("Prevents creating a job with extra fields", async () => {
