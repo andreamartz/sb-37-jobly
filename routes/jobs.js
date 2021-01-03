@@ -28,7 +28,6 @@ router.get("/", async function (req, res, next) {
       data.min_equity = min_equity;
     }
 
-    console.log("DATA: ", data);
     const results = await Job.findAll(data);
 
     return res.json({jobs: results});
@@ -50,10 +49,8 @@ router.post("/", async function(req, res, next) {
     // at this point, the request data have been confirmed valid
 
     let { job } = req.body;
-    // console.log("REQ.BODY: ", req.body);
-    // console.log("JOB: ", job);
+
     job = await Job.create(job);
-    // console.log("JOB AFTER DB: ", job);
     return res.status(201).json({ job });
   } catch (err) {
     return next(err);

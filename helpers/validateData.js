@@ -16,7 +16,6 @@ function validateData(data, schema) {
     // create validation error
     const listOfErrors = validation.errors.map(error => error.stack);
     const error = new ExpressError(listOfErrors, 400);
-    console.log("error: ", error);
     return error;
   }
   return validation.valid;

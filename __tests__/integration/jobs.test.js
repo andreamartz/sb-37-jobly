@@ -5,7 +5,6 @@ const app = require("../../app");
 const db = require("../../db");
 const { DB_URI } = require("../../config");
 
-console.log("DB_URI:", DB_URI);
 process.env.NODE_ENV = "test"
 
 // handle of sample job
@@ -93,7 +92,6 @@ describe("POST /jobs", () => {
     expect(resNewJob.body.job).toHaveProperty("id");
     expect(resNewJob.body.job.title).toEqual("QA Analyst");
     const resJobs = await request(app).get(`/jobs`);
-    console.log("RESJOBS: ", resJobs);
     expect(resJobs.body.jobs).toHaveLength(2);
   });
   
