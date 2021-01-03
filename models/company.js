@@ -15,6 +15,7 @@ class Company {
     const BASE_QUERY = 'SELECT handle, name FROM companies';
     const whereClauses = [];
     let whereString = "";
+    // Use query parameters to prevent SQL injection
     const queryParameters = [];
     let query;
 
@@ -102,7 +103,6 @@ class Company {
         data.logo_url
       ]
     );
-
     return results.rows[0];
   }
   
