@@ -35,8 +35,6 @@ class Job {
       queryParameters.push(+data.min_salary);
       whereClauses.push(`salary > $${queryParameters.length}`);
     }
-    console.log("WHERECLAUSES: ", whereClauses);
-    console.log("QUERYPARAMETERS: ", queryParameters);
 
     // if there is a min_equity query parameter   
     if (data.min_equity) {
@@ -52,8 +50,6 @@ class Job {
     whereString = whereString + whereClauses.join(" AND ");
     query = BASE_QUERY + whereString + ' ORDER BY date_posted';
     // }
-    console.log("WHERESTRING: ", whereString);
-    console.log("QUERY: ", query);
 
     const results = await db.query(query, queryParameters);
 
