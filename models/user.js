@@ -108,4 +108,21 @@ class User {
     return results.rows[0];
   }
 
+  static async remove(username) {
+    username = username.toUpperCase();
+    const result = await db.query(
+      `DELETE FROM users 
+      WHERE UPPER(username) = $1
+      RETURNING 
+        username`,
+      [username]
+    );
+  
+    if (result.rows.length === 0) {
+      throw new ExpressError('No such user was found', 404);
+    }
+    return result.rows[0];
+  }
+}
+
 module.exports = User;
