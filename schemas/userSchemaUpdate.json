@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+      {
+          "user": {
+              "username": "wahmmy",
+              "password": "secretword",
+              "first_name": "Sally",
+              "last_name": "Sitwell",
+              "email": "sally@sitwell.com",
+              "photo_url": "https://placekitten.com/200/300",
+              "is_admin": "true"
+          }
+      }
+  ],
+  "required": [
+      "user"
+  ],
+  "properties": {
+      "user": {
+          "$id": "#/properties/user",
+          "type": "object",
+          "title": "The user schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+              {
+                  "username": "wahmmy",
+                  "password": "secretword",
+                  "first_name": "Sally",
+                  "last_name": "Sitwell",
+                  "email": "sally@sitwell.com",
+                  "photo_url": "https://placekitten.com/200/300",
+                  "is_admin": "true"
+              }
+          ],
+          "required": [
+          ],
+          "properties": {
+              "username": {
+                  "$id": "#/properties/user/properties/username",
+                  "type": "string",
+                  "title": "The username schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "wahmmy"
+                  ]
+              },
+              "password": {
+                  "$id": "#/properties/user/properties/password",
+                  "type": "string",
+                  "title": "The password schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "secretword"
+                  ]
+              },
+              "first_name": {
+                  "$id": "#/properties/user/properties/first_name",
+                  "type": "string",
+                  "title": "The first_name schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "Sally"
+                  ]
+              },
+              "last_name": {
+                  "$id": "#/properties/user/properties/last_name",
+                  "type": "string",
+                  "title": "The last_name schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "Sitwell"
+                  ]
+              },
+              "email": {
+                  "$id": "#/properties/user/properties/email",
+                  "type": "string",
+                  "title": "The email schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "sally@sitwell.com"
+                  ],
+                  "format": "email"
+              },
+              "photo_url": {
+                  "$id": "#/properties/user/properties/photo_url",
+                  "type": "string",
+                  "title": "The photo_url schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "https://placekitten.com/200/300"
+                  ],
+                  "format": "uri"
+              },
+              "is_admin": {
+                  "$id": "#/properties/user/properties/is_admin",
+                  "type": "string",
+                  "title": "The is_admin schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "true"
+                  ]
+              }
+          },
+          "additionalProperties": false
+      }
+  },
+  "additionalProperties": false
+}
