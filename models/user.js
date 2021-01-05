@@ -96,5 +96,16 @@ class User {
 
     return results.rows[0];
   }
+  
+  static async update(username, data) {
+    const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
+    const results = await db.query(
+      query, values);
+    if (results.rows.length === 0) {
+      throw new ExpressError('No such user was found', 404);
+    }
+    delete results.rows[0].password;
+    return results.rows[0];
+  }
 
 module.exports = User;
