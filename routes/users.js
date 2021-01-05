@@ -6,7 +6,7 @@ const User = require("../models/user");
 const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
 const userSchemaNew = require("../schemas/userSchemaNew");
-// const userSchemaUpdate = require("../schemas/userSchemaUpdate");
+const userSchemaUpdate = require("../schemas/userSchemaUpdate");
 const validateData = require("../helpers/validateData");
 
 router.get("/", async function (req, res, next) {
