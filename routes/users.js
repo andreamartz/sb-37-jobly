@@ -81,4 +81,17 @@ router.patch("/:username", async function (req, res, next) {
   }
 });
 
+router.delete("/:username", async function (req, res, next) {
+  try {
+    const username = req.params.username.toUpperCase();
+    
+    // do the update in the database; save to 'user' variable
+    const user = await User.remove(username);
+
+    return res.json({message: "User deleted"});
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
