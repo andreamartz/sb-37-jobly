@@ -45,11 +45,9 @@ class User {
       WHERE LOWER(username)=$1`, 
       [username]
     );
-    console.log("USER: ", user);
     if (user.rows.length === 0) {
       throw new ExpressError(`There is no user with username '${username}'`, 404);
     }
-
     return user.rows[0];
   }
 
