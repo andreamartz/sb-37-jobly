@@ -27,6 +27,11 @@ class User {
     return results.rows;
   }
 
+  /** given a username, return user data with that username:
+   * 
+   * => {username, first_name, last_name, email, photo_url, is_admin}
+   * 
+   **/
   static async findOne(username) {
     const user = await db.query(
       `SELECT 
