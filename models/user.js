@@ -2,8 +2,9 @@ const db = require("../db");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const BCRYPT_WORK_FACTOR = 12;
+const { BCRYPT_WORK_FACTOR, SECRET_KEY } = require("../config");
 
 /** Collection of related methods for users */
 
