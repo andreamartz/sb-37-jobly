@@ -9,7 +9,8 @@ const { BCRYPT_WORK_FACTOR, SECRET_KEY } = require("../config");
 /** Collection of related methods for users */
 
 class User {
-  /** given a username, return user data with that username:
+  /** register: 
+   * given user data, register the user and return a user object containing those data
    * 
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
