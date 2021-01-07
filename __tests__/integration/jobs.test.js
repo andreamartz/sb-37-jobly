@@ -43,6 +43,15 @@ describe("GET /jobs", () => {
   });
 });
 
+// describe("GET /jobs/:id", () => {
+//   test("Gets a job by id", async () => {
+//     const res = await request(app).get(`/jobs/1`);
+//     console.log("RES.ROWS: ", res.rows);
+//     expect(res.statusCode).toEqual(200);
+//     expect(res.company.handle).toEqual(res.company_handle);
+//   });
+// });
+
 describe("POST /jobs", () => {
   test("Creates a new job", async () => {
     const resNewJob = await request(app)
@@ -80,4 +89,3 @@ describe("POST /jobs", () => {
     expect(res.statusCode).toEqual(400);
   });
 });
-

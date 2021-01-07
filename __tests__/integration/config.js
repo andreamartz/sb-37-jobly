@@ -20,6 +20,14 @@ const TEST_DATA = {};
  *  in the input `testData` parameter.
  * @param {Object} TEST_DATA - build the TEST_DATA object
  */
+// async function beforeAllHook() {
+//   try {
+//     await db.connect();
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
+
 async function beforeEachHook(TEST_DATA) {
   try {
     // login a user, get a token, store the user ID and token
@@ -74,13 +82,14 @@ async function afterEachHook() {
 
 async function afterAllHook() {
   try {
-    await db.end();
+    // await db.end();
   } catch (err) {
     console.error(err);
   }
 }
 
 module.exports = {
+  // beforeAllHook,
   beforeEachHook,
   TEST_DATA,
   afterEachHook,
