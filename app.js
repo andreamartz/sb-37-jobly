@@ -13,10 +13,12 @@ app.use(express.json());
 const companyRoutes = require("./routes/companies");
 const jobRoutes = require("./routes/jobs");
 const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
 
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/users", userRoutes);
+app.use("/", authRoutes);
 
 // middleware to parse incoming request body as JSON
 app.use(express.json());

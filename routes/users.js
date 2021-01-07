@@ -1,6 +1,5 @@
 /** Routes for users using Jobly */
 
-const db = require("../db");
 const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();

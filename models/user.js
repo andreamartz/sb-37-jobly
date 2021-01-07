@@ -2,50 +2,19 @@ const db = require("../db");
 const ExpressError = require("../helpers/expressError");
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const BCRYPT_WORK_FACTOR = 12;
+const { BCRYPT_WORK_FACTOR, SECRET_KEY } = require("../config");
 
 /** Collection of related methods for users */
 
 class User {
-  /** given a username, return user data with that username:
+  /** register: 
+   * given user data, register the user and return a user object containing those data
    * 
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
    **/
-
-  static async findAll() {
-    const results = await db.query(`
-    SELECT 
-      username, 
-      first_name, 
-      last_name, 
-      email
-    FROM users`);
-
-    return results.rows;
-  }
-
-  static async findOne(username) {
-    const user = await db.query(
-      `SELECT 
-        username, 
-        first_name, 
-        last_name, 
-        email, 
-        photo_url, 
-        is_admin 
-      FROM users
-      WHERE LOWER(username)=$1`, 
-      [username]
-    );
-    console.log("USER: ", user);
-    if (user.rows.length === 0) {
-      throw new ExpressError(`There is no user with username '${username}'`, 404);
-    }
-
-    return user.rows[0];
-  }
 
   static async register(data) {
     // verify that the username has not already been taken, and throw an error if it has been - use the User.findOne() method
@@ -96,7 +65,80 @@ class User {
 
     return results.rows[0];
   }
-  
+
+  /** authenticate: 
+   * given user data, find the user and check the password against the database. If successful, return the user object.
+   * 
+   * => {username, is_admin}
+   * 
+   **/
+  static async authenticate(data) {
+    const { username, password } = data;
+    try {
+      // query db to find the user by username
+      const result = await db.query(`
+        SELECT username, password, is_Admin
+        FROM users
+        WHERE username = $1`,
+        [username]
+      );
+      let user = result.rows[0];
+      console.log("USER FROM MODEL: ", user);
+
+      // if user found, check the pw
+      if (user) {
+        const isValidPw = await bcrypt.compare(password, user.password);
+        // if pw is valid, return the user object
+        if (isValidPw) {
+          delete user.password;
+          console.log("USER2 FROM MODEL: ", user);
+          return user;
+        }
+      // if user or pw not valid, throw error
+      } else {
+        throw new ExpressError("Invalid user/password", 400);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  static async findAll() {
+    const results = await db.query(`
+    SELECT 
+      username, 
+      first_name, 
+      last_name, 
+      email
+    FROM users`);
+
+    return results.rows;
+  }
+
+  /** given a username, return user data with that username:
+   * 
+   * => {username, first_name, last_name, email, photo_url, is_admin}
+   * 
+   **/
+  static async findOne(username) {
+    const user = await db.query(
+      `SELECT 
+        username, 
+        first_name, 
+        last_name, 
+        email, 
+        photo_url, 
+        is_admin 
+      FROM users
+      WHERE LOWER(username)=$1`, 
+      [username]
+    );
+    if (user.rows.length === 0) {
+      throw new ExpressError(`There is no user with username '${username}'`, 404);
+    }
+    return user.rows[0];
+  }
+
   static async update(username, data) {
     const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
     const results = await db.query(
