@@ -4,27 +4,28 @@ const express = require("express");
 const ExpressError = require("./helpers/expressError");
 // require the logging package
 const morgan = require("morgan");
+const { authenticateJWT, authRequired, adminRequired, ensureCorrectUser } = require("./middleware/auth");
 
 const app = express();
-
-// middleware to parse incoming request body as JSON
-app.use(express.json());
 
 const companyRoutes = require("./routes/companies");
 const jobRoutes = require("./routes/jobs");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 
+/** 
+ * Middleware to run for every request 
+ */
+app.use(express.json());  // parse incoming request body as JSON
+app.use(authenticateJWT);  // verify token
+
+
+app.use(morgan("dev"))  // http request logging system
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/users", userRoutes);
 app.use("/", authRoutes);
 
-// middleware to parse incoming request body as JSON
-app.use(express.json());
-
-// add http request logging system
-app.use(morgan("dev"))
 
 /** 404 handler */
 
