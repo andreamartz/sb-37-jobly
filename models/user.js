@@ -74,33 +74,26 @@ class User {
    **/
   static async authenticate(data) {
     const { username, password } = data;
-    try {
-      // query db to find the user by username
-      const result = await db.query(`
-        SELECT username, password, is_Admin
-        FROM users
-        WHERE username = $1`,
-        [username]
-      );
-      let user = result.rows[0];
-      console.log("USER FROM MODEL: ", user);
+    // query db to find the user by username
+    const result = await db.query(`
+      SELECT username, password, is_Admin
+      FROM users
+      WHERE username = $1`,
+      [username]
+    );
+    let user = result.rows[0];
 
-      // if user found, check the pw
-      if (user) {
-        const isValidPw = await bcrypt.compare(password, user.password);
-        // if pw is valid, return the user object
-        if (isValidPw) {
-          delete user.password;
-          console.log("USER2 FROM MODEL: ", user);
-          return user;
-        }
-      // if user or pw not valid, throw error
-      } else {
-        throw new ExpressError("Invalid user/password", 400);
+    // if user found, check the pw
+    if (user) {
+      const isValidPw = await bcrypt.compare(password, user.password);  // boolean
+      // if pw is valid, return the user object
+      if (isValidPw) {
+        delete user.password;
+        return user;
       }
-    } catch (err) {
-      console.error(err);
-    }
+    // if user or pw not valid, throw error
+    } 
+    throw new ExpressError("Invalid user/password", 400);
   }
 
   static async findAll() {
