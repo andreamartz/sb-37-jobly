@@ -15,42 +15,6 @@ class User {
    * 
    **/
 
-  static async findAll() {
-    const results = await db.query(`
-    SELECT 
-      username, 
-      first_name, 
-      last_name, 
-      email
-    FROM users`);
-
-    return results.rows;
-  }
-
-  /** given a username, return user data with that username:
-   * 
-   * => {username, first_name, last_name, email, photo_url, is_admin}
-   * 
-   **/
-  static async findOne(username) {
-    const user = await db.query(
-      `SELECT 
-        username, 
-        first_name, 
-        last_name, 
-        email, 
-        photo_url, 
-        is_admin 
-      FROM users
-      WHERE LOWER(username)=$1`, 
-      [username]
-    );
-    if (user.rows.length === 0) {
-      throw new ExpressError(`There is no user with username '${username}'`, 404);
-    }
-    return user.rows[0];
-  }
-
   static async register(data) {
     // verify that the username has not already been taken, and throw an error if it has been - use the User.findOne() method
     const dupeCheck = await db.query(
@@ -101,6 +65,43 @@ class User {
     return results.rows[0];
   }
   
+
+  static async findAll() {
+    const results = await db.query(`
+    SELECT 
+      username, 
+      first_name, 
+      last_name, 
+      email
+    FROM users`);
+
+    return results.rows;
+  }
+
+  /** given a username, return user data with that username:
+   * 
+   * => {username, first_name, last_name, email, photo_url, is_admin}
+   * 
+   **/
+  static async findOne(username) {
+    const user = await db.query(
+      `SELECT 
+        username, 
+        first_name, 
+        last_name, 
+        email, 
+        photo_url, 
+        is_admin 
+      FROM users
+      WHERE LOWER(username)=$1`, 
+      [username]
+    );
+    if (user.rows.length === 0) {
+      throw new ExpressError(`There is no user with username '${username}'`, 404);
+    }
+    return user.rows[0];
+  }
+
   static async update(username, data) {
     const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
     const results = await db.query(
