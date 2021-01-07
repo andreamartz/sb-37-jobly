@@ -7,8 +7,9 @@ const ExpressError = require("../helpers/expressError");
 const jobSchemaNew = require("../schemas/jobSchemaNew");
 const jobSchemaUpdate = require("../schemas/jobSchemaUpdate");
 const validateData = require("../helpers/validateData");
+const { authRequired, adminRequired } = require("../middleware/auth");
 
-router.get("/", async function (req, res, next) {
+router.get("/", authRequired, async function (req, res, next) {
   try {
     let { search, min_salary, min_equity } = req.query;
     const data = {};
@@ -34,7 +35,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", authRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     const job = await Job.findOne(id);
@@ -45,7 +46,7 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 
-router.post("/", async function(req, res, next) {
+router.post("/", adminRequired, async function(req, res, next) {
   try {
     // validate data
     const validationOutcome = validateData(req.body, jobSchemaNew);
@@ -66,7 +67,7 @@ router.post("/", async function(req, res, next) {
   }
 });
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id", adminRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     const jobData = req.body.job;
@@ -97,7 +98,7 @@ router.patch("/:id", async function (req, res, next) {
   }
 });
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", adminRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     console.log("REQ.PARAMS.ID: ", req.params.id);
