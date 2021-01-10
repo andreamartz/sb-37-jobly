@@ -62,7 +62,7 @@ router.patch("/:username", authenticateJWT, correctUserRequired, async function 
   }
 });
 
-router.delete("/:username", async function (req, res, next) {
+router.delete("/:username", authenticateJWT, correctUserRequired, async function (req, res, next) {
   try {
     const username = req.params.username.toUpperCase();
     
