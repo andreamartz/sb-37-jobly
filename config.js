@@ -6,7 +6,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "gra*$jkyuludsth";
 
 const PORT = +process.env.PORT || 3000;
 
-const BCRYPT_WORK_FACTOR = 12;
+let BCRYPT_WORK_FACTOR;
 
 // database is:
 //
@@ -18,8 +18,10 @@ let DB_URI = `postgresql://`;
 
 if (process.env.NODE_ENV === "test") {
   DB_URI = `${DB_URI}/jobly-test`;
+  BCRYPT_WORK_FACTOR = 1;
 } else {
   DB_URI = process.env.DATABASE_URL || `${DB_URI}/jobly`;
+  BCRYPT_WORK_FACTOR = 12;
 }
 
 module.exports = {
