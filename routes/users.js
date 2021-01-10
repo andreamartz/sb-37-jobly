@@ -4,9 +4,10 @@ const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
-const userSchemaNew = require("../schemas/userSchemaNew");
 const userSchemaUpdate = require("../schemas/userSchemaUpdate");
 const validateData = require("../helpers/validateData");
+const { authenticateJWT, correctUserRequired } = require("../middleware/auth");
+
 
 router.get("/", async function (req, res, next) {
   try {
@@ -27,26 +28,7 @@ router.get("/:username", async function (req, res, next) {
   }
 });
 
-router.post("/", async function(req, res, next) {
-  try {
-    // validate data
-    const validationOutcome = validateData(req.body, userSchemaNew);
-
-    // pass any validation errors to error handler
-    if (validationOutcome instanceof Error) {
-      return next(validationOutcome);
-    }
-
-    // at this point, the request data have been confirmed valid
-    let user = req.body.user;
-    user = await User.register(user);
-    return res.status(201).json({ user });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-router.patch("/:username", async function (req, res, next) {
+router.patch("/:username", authenticateJWT, correctUserRequired, async function (req, res, next) {
   try {
     const username = req.params.username.toLowerCase();
     const userData = req.body.user;
