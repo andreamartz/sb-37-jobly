@@ -16,6 +16,7 @@ const validateData = require("../helpers/validateData");
 router.post("/register", async function(req, res, next) {
   try {
     // validate data
+    console.log("REQ.BODY: ", req.body);
     const validationOutcome = validateData(req.body, userSchemaNew);
     console.log("VALIDATIONOUTCOME: ", validationOutcome);
     // pass any validation errors to error handler
@@ -48,7 +49,7 @@ router.post("/login", async function (req, res, next) {
     // authenticate the user and get token
     const user = await User.authenticate(data);
     const token = createToken(user);
-    return res.json({ token });
+    return res.status(201).json({ token });
   } catch (err) {
     return next(err);
   }
