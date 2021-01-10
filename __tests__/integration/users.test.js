@@ -5,10 +5,15 @@ const app = require("../../app");
 
 const {
   TEST_DATA,
+  beforeAllHook,
   beforeEachHook,
   afterEachHook,
   afterAllHook
 } = require("./config");
+
+// beforeAll(async () => {
+//   await beforeAllHook();
+// });
 
 beforeEach(async () => {
   await beforeEachHook(TEST_DATA);
@@ -21,8 +26,10 @@ afterEach(async () => {
 afterAllHook(async () => {
   await afterAllHook();
 });
-
-describe("POST /register", function () {
+/** 
+ * Test /auth/register route
+ */
+describe("POST /auth/register", function () {
   test("Registers a new user", async function () {
     const user = { 
       user: 
@@ -114,6 +121,43 @@ describe("POST /register", function () {
     );
   });
 });
+
+/** 
+ * Test /auth/login route
+ */
+describe("POST /auth/login", function () {
+  test("Logs in a user", async function () {
+    const user = { 
+      user: 
+      { 
+        username: "testuser-not-admin",
+        password: "secret"
+      }
+    };
+    const response = await request(app)
+      .post('/auth/login')
+      .send(user)
+    ;
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toEqual(expect.objectContaining({ token: expect.any(String) }));
+  });
+
+  test("Login fails with wrong password", async function () {
+    const user = {
+      user:
+      {
+        username: "testuser-not-admin",
+        password: "Wrong-password"
+      }
+    };
+    const response = await request(app)
+      .post(`/auth/login`)
+      .send(user)
+    ;
+    expect(response.statusCode).toBe(400);
+  });
+});
+
 
 
 
