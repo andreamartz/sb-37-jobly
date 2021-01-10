@@ -19,7 +19,7 @@ function authenticateJWT(req, res, next) {
     return next();
   } catch(err) {
     // error in this middleware is not one we care about -- continue on
-    console.log("authenticateJWT middleware returned an error.");
+    console.log("ERR: ", err, "No token was found; authenticateJWT middleware returned an error, but continue on...");
     return next();
   }
 }
