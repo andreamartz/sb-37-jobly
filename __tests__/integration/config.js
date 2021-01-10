@@ -18,13 +18,13 @@ const TEST_DATA = {};
  * 
  * @param {Object} TEST_DATA - build the TEST_DATA object
  */
-// async function beforeAllHook() {
-//   try {
-//     await db.connect();
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
+async function beforeAllHook() {
+  try {
+    await db.connect();
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 async function beforeEachHook(TEST_DATA) {
   try {
@@ -49,17 +49,21 @@ async function beforeEachHook(TEST_DATA) {
     // log in both sample users (one with and one without admin rights) and receive token for each
     const respNotAdmin = await request(app)
       .post('/auth/login')
-      .send({
-        username: 'testuser-not-admin',
-        password: 'secret'
+      .send({ user:
+        {
+          username: 'testuser-not-admin',
+          password: 'secret'
+        }
       }
     );
 
     const respAdmin = await request(app)
       .post('/auth/login')
-      .send({
-        username: 'testuser-admin',
-        password: 'secret'
+      .send({ user:
+        {
+          username: 'testuser-admin',
+          password: 'secret'
+        }
       }
     );
     
@@ -92,6 +96,7 @@ async function beforeEachHook(TEST_DATA) {
         RETURNING id, title, salary, equity, company_handle, date_posted`,
         [TEST_DATA.currentCompany.handle]
     );
+    console.log("currentJob.rows[0]: ", currentJob.rows[0]);
     TEST_DATA.jobId = currentJob.rows[0].id;
   } catch (error) {
     console.error(error);
@@ -117,7 +122,7 @@ async function afterAllHook() {
 }
 
 module.exports = {
-  // beforeAllHook,
+  beforeAllHook,
   beforeEachHook,
   TEST_DATA,
   afterEachHook,
