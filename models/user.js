@@ -15,7 +15,6 @@ class User {
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
    **/
-
   static async register(data) {
     // verify that the username has not already been taken, and throw an error if it has been - use the User.findOne() method
     const dupeCheck = await db.query(
@@ -24,6 +23,7 @@ class User {
         WHERE username = $1`,
       [data.username]
     );
+    console.log("DUPECHECK.ROWS[0]: ", dupeCheck.rows[0]);
 
     if (dupeCheck.rows[0]) {
       throw new ExpressError(
@@ -62,14 +62,19 @@ class User {
         data.is_admin
       ]
     );
-
+    console.log("RESULTS.ROWS[0] FROM MODEL: ", results.rows[0]);
     return results.rows[0];
   }
 
-  /** authenticate: 
-   * given user data, find the user and check the password against the database. If successful, return the user object.
+  /** 
+   * authenticate: 
    * 
-   * => {username, is_admin}
+   * Given: an object containing username and password
+   *  
+   * 1. Find the user and check the password against the database.
+   * 2. If successful, return the user object with username, password, is_Admin.
+   * 
+   * { username, password } => {username, is_admin}
    * 
    **/
   static async authenticate(data) {
