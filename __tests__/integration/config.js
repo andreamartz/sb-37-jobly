@@ -96,7 +96,6 @@ async function beforeEachHook(TEST_DATA) {
         RETURNING id, title, salary, equity, company_handle, date_posted`,
         [TEST_DATA.currentCompany.handle]
     );
-    console.log("currentJob.rows[0]: ", currentJob.rows[0]);
     TEST_DATA.jobId = currentJob.rows[0].id;
   } catch (error) {
     console.error(error);
