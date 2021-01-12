@@ -23,7 +23,6 @@ class User {
         WHERE username = $1`,
       [data.username]
     );
-    console.log("DUPECHECK.ROWS[0]: ", dupeCheck.rows[0]);
 
     if (dupeCheck.rows[0]) {
       throw new ExpressError(
@@ -62,9 +61,8 @@ class User {
         data.is_admin
       ]
     );
-    console.log("RESULTS.ROWS[0] FROM MODEL: ", results.rows[0]);
     return results.rows[0];
-  }
+  };
 
   /** 
    * authenticate: 
@@ -113,7 +111,9 @@ class User {
     return results.rows;
   }
 
-  /** given a username, return user data with that username:
+  /** 
+   * findOne
+   * given a username, return user data with that username:
    * 
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
@@ -137,6 +137,14 @@ class User {
     return user.rows[0];
   }
 
+   /** 
+   * update
+   * 
+   * given a username, return user data with that username:
+   * 
+   * => {username, first_name, last_name, email, photo_url, is_admin}
+   * 
+   **/
   static async update(username, data) {
     const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
     const results = await db.query(
