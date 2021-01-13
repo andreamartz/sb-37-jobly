@@ -79,7 +79,7 @@ class User {
     const { username, password } = data;
     // query db to find the user by username
     const result = await db.query(`
-      SELECT username, password, is_Admin
+      SELECT username, password, is_admin
       FROM users
       WHERE username = $1`,
       [username]
@@ -92,6 +92,7 @@ class User {
       // if pw is valid, return the user object
       if (isValidPw) {
         delete user.password;
+        console.log("USER: ", user);
         return user;
       }
     // if user or pw not valid, throw error
