@@ -4,7 +4,7 @@ const express = require("express");
 const ExpressError = require("./helpers/expressError");
 // require the logging package
 const morgan = require("morgan");
-const { authenticateJWT, authRequired, adminRequired, ensureCorrectUser } = require("./middleware/auth");
+const { authenticateJWT, authRequired, adminRequired, correctUserRequired } = require("./middleware/auth");
 
 const app = express();
 
