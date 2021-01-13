@@ -17,14 +17,11 @@ const authRoutes = require("./routes/auth");
  * Middleware to run for every request 
  */
 app.use(express.json());  // parse incoming request body as JSON
-app.use(authenticateJWT);  // verify token
-
-
 app.use(morgan("dev"))  // http request logging system
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/users", userRoutes);
-app.use("/", authRoutes);
+app.use("/auth", authRoutes);
 
 
 /** 404 handler */
