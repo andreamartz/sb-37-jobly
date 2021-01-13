@@ -7,8 +7,9 @@ const ExpressError = require("../helpers/expressError");
 const companySchemaNew = require("../schemas/companySchemaNew");
 const companySchemaUpdate = require("../schemas/companySchemaUpdate");
 const validateData = require("../helpers/validateData");
+const { authRequired, adminRequired } = require("../middleware/auth");
 
-router.get("/", async function (req, res, next) {
+router.get("/", authRequired, async function (req, res, next) {
   try {
     let {search, min_employees, max_employees} = req.query;
     const data = {};
@@ -34,7 +35,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
-router.get("/:handle", async function (req, res, next) {
+router.get("/:handle", authRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     const results = await Company.findOne(handle);
@@ -44,7 +45,7 @@ router.get("/:handle", async function (req, res, next) {
   }
 });
 
-router.post("/", async function(req, res, next) {
+router.post("/", adminRequired, async function(req, res, next) {
   try {
     // validate data
     const validationOutcome = validateData(req.body, companySchemaNew);
@@ -64,19 +65,13 @@ router.post("/", async function(req, res, next) {
   }
 });
 
-router.patch("/:handle", async function (req, res, next) {
+router.patch("/:handle", adminRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     const companyData = req.body.company;
-    companyData.handle = companyData.handle.toUpperCase();
 
     // throw error if handle is not found for any company
     const companyCheck = await Company.findOne(handle);
-
-    // throw error if user tries to update the handle
-    if (companyData.handle.toUpperCase() !== handle) {
-      throw new ExpressError('You cannot change the handle.', 400);
-    }
 
     // validate the data on the request body
     const validationOutcome = validateData(req.body, companySchemaUpdate);
@@ -96,7 +91,7 @@ router.patch("/:handle", async function (req, res, next) {
   }
 });
 
-router.delete("/:handle", async function (req, res, next) {
+router.delete("/:handle", adminRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     

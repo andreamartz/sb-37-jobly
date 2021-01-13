@@ -2,7 +2,7 @@
 
 const request =  require("supertest");
 const app = require("../../app");
-// const db = require("../../db");
+const db = require("../../db");
 // const { DB_URI } = require("../../config");
 
 // process.env.NODE_ENV = "test"
@@ -12,8 +12,9 @@ const app = require("../../app");
 
 const {
   TEST_DATA,
-  afterEachHook,
+  // beforeAllHook,
   beforeEachHook,
+  afterEachHook,
   afterAllHook
 } = require("./config");
 
@@ -44,6 +45,13 @@ const {
 
 // afterAll(async () => {
 //   await db.end();
+// });
+
+
+
+
+// beforeAll(async () => {
+//   await beforeAllHook();
 // });
 
 beforeEach(async () => {

@@ -8,45 +8,35 @@
     "examples": [
         {
             "job": {
-                "id": 4,
-                "title": "Jr Software Engineer",
+                "title": "Junior Software Engineer",
                 "salary": 60000,
                 "equity": 0.07,
-                "company_handle": "NOW"
-            }
+                "company_handle": "NFLX"
+            },
+            "_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXJuYW1lIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTYxMDA0NTg0OH0.H27thGwwUgxKgsL5ekWYy15398i-3Q8b8_4s1t7SWAQ"
         }
     ],
     "required": [
-        "job"
+        "job",
+        "_token"
     ],
     "properties": {
         "job": {
             "$id": "#/properties/job",
-            "default": {},
+            "type": "object",
+            "title": "The job schema",
             "description": "An explanation about the purpose of this instance.",
+            "default": {},
             "examples": [
                 {
-                    "id": 4,
-                    "title": "Jr Software Engineer",
+                    "title": "Junior Software Engineer",
                     "salary": 60000,
                     "equity": 0.07,
-                    "company_handle": "NOW"
+                    "company_handle": "NFLX"
                 }
             ],
             "required": [],
-            "title": "The job schema",
-            "type": "object",
             "properties": {
-                "id": {
-                    "$id": "#/properties/job/properties/id",
-                    "type": "integer",
-                    "title": "The id schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        4
-                    ]
-                },
                 "title": {
                     "$id": "#/properties/job/properties/title",
                     "type": "string",
@@ -54,7 +44,7 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "Jr Software Engineer"
+                        "Junior Software Engineer"
                     ]
                 },
                 "salary": {
@@ -84,11 +74,21 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "NOW"
+                        "NFLX"
                     ]
                 }
             },
             "additionalProperties": false
+        },
+        "_token": {
+            "$id": "#/properties/_token",
+            "type": "string",
+            "title": "The _token schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXJuYW1lIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTYxMDA0NTg0OH0.H27thGwwUgxKgsL5ekWYy15398i-3Q8b8_4s1t7SWAQ"
+            ]
         }
     },
     "additionalProperties": false

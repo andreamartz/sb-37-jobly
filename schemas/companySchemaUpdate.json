@@ -8,16 +8,17 @@
     "examples": [
         {
             "company": {
-                "handle": "BLK",
-                "name": "Blackrock",
-                "num_employees": 2100,
-                "description": "Financial Services and Broker",
+                "name": "WMT",
+                "num_employees": 16500,
+                "description": "A BIG retailer",
                 "logo_url": "http://a.co/ejkljkl"
-            }
+            },
+            "_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXJuYW1lIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTYxMDA0NTg0OH0.H27thGwwUgxKgsL5ekWYy15398i-3Q8b8_4s1t7SWAQ"
         }
     ],
     "required": [
-        "company"
+        "company",
+        "_token"
     ],
     "properties": {
         "company": {
@@ -26,29 +27,16 @@
             "description": "An explanation about the purpose of this instance.",
             "examples": [
                 {
-                    "handle": "BLK",
-                    "name": "Blackrock",
-                    "num_employees": 2100,
-                    "description": "Financial Services and Broker",
+                    "name": "WMT",
+                    "num_employees": 16500,
+                    "description": "A BIG retailer",
                     "logo_url": "http://a.co/ejkljkl"
                 }
             ],
-            "required": [
-                "handle"
-            ],
+            "required": [],
             "title": "The company schema",
             "type": "object",
             "properties": {
-                "handle": {
-                    "$id": "#/properties/company/properties/handle",
-                    "type": "string",
-                    "title": "The handle schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "BLK"
-                    ]
-                },
                 "name": {
                     "$id": "#/properties/company/properties/name",
                     "type": "string",
@@ -56,7 +44,7 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "Blackrock"
+                        "WMT"
                     ]
                 },
                 "num_employees": {
@@ -66,7 +54,7 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": 0,
                     "examples": [
-                        2100
+                        16500
                     ]
                 },
                 "description": {
@@ -76,22 +64,31 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "Financial Services and Broker"
+                        "A BIG retailer"
                     ]
                 },
                 "logo_url": {
                     "$id": "#/properties/company/properties/logo_url",
-                    "default": "",
+                    "type": "string",
+                    "title": "The logo_url schema",
                     "description": "An explanation about the purpose of this instance.",
+                    "default": "",
                     "examples": [
                         "http://a.co/ejkljkl"
-                    ],
-                    "title": "The logo_url schema",
-                    "type": "string",
-                    "format": "uri"
+                    ]
                 }
             },
             "additionalProperties": false
+        },
+        "_token": {
+            "$id": "#/properties/_token",
+            "type": "string",
+            "title": "The _token schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXJuYW1lIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTYxMDA0NTg0OH0.H27thGwwUgxKgsL5ekWYy15398i-3Q8b8_4s1t7SWAQ"
+            ]
         }
     },
     "additionalProperties": false

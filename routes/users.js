@@ -4,10 +4,29 @@ const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
-const userSchemaNew = require("../schemas/userSchemaNew");
 const userSchemaUpdate = require("../schemas/userSchemaUpdate");
 const validateData = require("../helpers/validateData");
+const { authenticateJWT, correctUserRequired } = require("../middleware/auth");
 
+/** 
+ * GET /: gets all users
+ * 
+ * No auth needed
+ * 
+ * Returns object with users key:
+ * { 
+ *   "users": [
+ *     {
+ *        "username": "username",
+ *        "first_name": "first_name",
+ *        "last_name": "last_name",
+ *        "email": "email"
+ *     },
+ *     { ... },
+ *     { ... }
+ *   ]
+ * }
+ */
 router.get("/", async function (req, res, next) {
   try {
     const results = await User.findAll();
@@ -17,6 +36,23 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+/** 
+ * GET /:username gets a user's details
+ * 
+ * No auth needed
+ * 
+ * Returns object with user key:
+ * { 
+ *   "user": {
+ *     "username": "username",
+ *     "first_name": "first_name",
+ *     "last_name": "last_name",
+ *     "email": "email",
+ *     "photo_url": "photo_url",
+ *     "is_admin": "is_admin"
+ *   }
+ * }
+ */
 router.get("/:username", async function (req, res, next) {
   try {
     const username = req.params.username.toLowerCase();
@@ -27,40 +63,36 @@ router.get("/:username", async function (req, res, next) {
   }
 });
 
-router.post("/", async function(req, res, next) {
-  try {
-    // validate data
-    const validationOutcome = validateData(req.body, userSchemaNew);
-
-    // pass any validation errors to error handler
-    if (validationOutcome instanceof Error) {
-      return next(validationOutcome);
-    }
-
-    // at this point, the request data have been confirmed valid
-    let user = req.body.user;
-    user = await User.register(user);
-    return res.status(201).json({ user });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-router.patch("/:username", async function (req, res, next) {
+/** 
+ * PATCH /:username gets a user's details
+ * 
+ * Auth needed: correctUserRequired
+ * 
+ * Fields that can be updated: password, first_name, last_name, email, photo_url, is_admin
+ * 
+ * {
+ *    user: { < user data to update > },
+ *    token: token
+ * } 
+ * =>
+ * { 
+ *   user: {
+ *     username: username,
+ *     first_name: first_name,
+ *     last_name: last_name,
+ *     email: email,
+ *     photo_url: photo_url,
+ *     is_admin: is_admin
+ *   }
+ * }
+ */
+router.patch("/:username", authenticateJWT, correctUserRequired, async function (req, res, next) {
   try {
     const username = req.params.username.toLowerCase();
     const userData = req.body.user;
 
     // throw error if username is not found for any user
     const UserCheck = await User.findOne(username);
-
-    if (userData.username) {
-      userData.username = userData.username.toLowerCase();
-      // throw error if user tries to update the username
-      if (userData.username !== username) {
-        throw new ExpressError('You cannot change the username.', 400);
-      }
-    }
 
     // validate the data on the request body
     const validationOutcome = validateData(req.body, userSchemaUpdate);
@@ -80,7 +112,7 @@ router.patch("/:username", async function (req, res, next) {
   }
 });
 
-router.delete("/:username", async function (req, res, next) {
+router.delete("/:username", authenticateJWT, correctUserRequired, async function (req, res, next) {
   try {
     const username = req.params.username.toUpperCase();
     

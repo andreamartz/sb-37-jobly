@@ -15,7 +15,6 @@ class User {
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
    **/
-
   static async register(data) {
     // verify that the username has not already been taken, and throw an error if it has been - use the User.findOne() method
     const dupeCheck = await db.query(
@@ -62,45 +61,43 @@ class User {
         data.is_admin
       ]
     );
-
     return results.rows[0];
-  }
+  };
 
-  /** authenticate: 
-   * given user data, find the user and check the password against the database. If successful, return the user object.
+  /** 
+   * authenticate: 
    * 
-   * => {username, is_admin}
+   * Given: an object containing username and password
+   *  
+   * 1. Find the user and check the password against the database.
+   * 2. If successful, return the user object with username, password, is_Admin.
+   * 
+   * { username, password } => {username, is_admin}
    * 
    **/
   static async authenticate(data) {
     const { username, password } = data;
-    try {
-      // query db to find the user by username
-      const result = await db.query(`
-        SELECT username, password, is_Admin
-        FROM users
-        WHERE username = $1`,
-        [username]
-      );
-      let user = result.rows[0];
-      console.log("USER FROM MODEL: ", user);
+    // query db to find the user by username
+    const result = await db.query(`
+      SELECT username, password, is_admin
+      FROM users
+      WHERE username = $1`,
+      [username]
+    );
+    let user = result.rows[0];
 
-      // if user found, check the pw
-      if (user) {
-        const isValidPw = await bcrypt.compare(password, user.password);
-        // if pw is valid, return the user object
-        if (isValidPw) {
-          delete user.password;
-          console.log("USER2 FROM MODEL: ", user);
-          return user;
-        }
-      // if user or pw not valid, throw error
-      } else {
-        throw new ExpressError("Invalid user/password", 400);
+    // if user found, check the pw
+    if (user) {
+      const isValidPw = await bcrypt.compare(password, user.password);  // boolean
+      // if pw is valid, return the user object
+      if (isValidPw) {
+        delete user.password;
+        console.log("USER: ", user);
+        return user;
       }
-    } catch (err) {
-      console.error(err);
-    }
+    // if user or pw not valid, throw error
+    } 
+    throw new ExpressError("Invalid user/password", 400);
   }
 
   static async findAll() {
@@ -115,7 +112,9 @@ class User {
     return results.rows;
   }
 
-  /** given a username, return user data with that username:
+  /** 
+   * findOne
+   * given a username, return user data with that username:
    * 
    * => {username, first_name, last_name, email, photo_url, is_admin}
    * 
@@ -139,7 +138,22 @@ class User {
     return user.rows[0];
   }
 
+   /** 
+   * update
+   * 
+   * given a username, return user data with that username:
+   * 
+   * => {username, first_name, last_name, email, photo_url, is_admin}
+   * 
+   **/
   static async update(username, data) {
+    // if updating password
+    if (data.password) {
+      // encrypt the password for storage in database
+      const hashedPassword = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+      data.password = hashedPassword;
+    }
+
     const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
     const results = await db.query(
       query, values);

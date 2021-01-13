@@ -49,8 +49,7 @@ class Job {
     }
 
     whereString = whereString + whereClauses.join(" AND ");
-    query = BASE_QUERY + whereString + ' ORDER BY date_posted';
-    // }
+    query = BASE_QUERY + whereString + ' ORDER BY date_posted DESC';
 
     const results = await db.query(query, queryParameters);
 
