@@ -221,11 +221,9 @@ router.patch("/:id", authenticateJWT, adminRequired, async function (req, res, n
 router.delete("/:id", authenticateJWT, adminRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
-    console.log("REQ.PARAMS.ID: ", req.params.id);
     
     // do the update in the database; save to 'job' variable
     const job = await Job.remove(id);
-    console.log("JOB: ", job);
     return res.json({message: "Job deleted"});
   } catch (err) {
       return next(err);

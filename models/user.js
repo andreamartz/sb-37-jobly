@@ -92,7 +92,6 @@ class User {
       // if pw is valid, return the user object
       if (isValidPw) {
         delete user.password;
-        console.log("USER: ", user);
         return user;
       }
     // if user or pw not valid, throw error
