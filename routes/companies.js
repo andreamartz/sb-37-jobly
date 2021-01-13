@@ -7,9 +7,9 @@ const ExpressError = require("../helpers/expressError");
 const companySchemaNew = require("../schemas/companySchemaNew");
 const companySchemaUpdate = require("../schemas/companySchemaUpdate");
 const validateData = require("../helpers/validateData");
-const { authRequired, adminRequired } = require("../middleware/auth");
+const { authenticateJWT, authRequired, adminRequired } = require("../middleware/auth");
 
-router.get("/", authRequired, async function (req, res, next) {
+router.get("/", authenticateJWT, authRequired, async function (req, res, next) {
   try {
     let {search, min_employees, max_employees} = req.query;
     const data = {};
@@ -35,7 +35,7 @@ router.get("/", authRequired, async function (req, res, next) {
   }
 });
 
-router.get("/:handle", authRequired, async function (req, res, next) {
+router.get("/:handle", authenticateJWT, authRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     const results = await Company.findOne(handle);
@@ -45,7 +45,7 @@ router.get("/:handle", authRequired, async function (req, res, next) {
   }
 });
 
-router.post("/", adminRequired, async function(req, res, next) {
+router.post("/", authenticateJWT, adminRequired, async function(req, res, next) {
   try {
     // validate data
     const validationOutcome = validateData(req.body, companySchemaNew);
@@ -65,7 +65,7 @@ router.post("/", adminRequired, async function(req, res, next) {
   }
 });
 
-router.patch("/:handle", adminRequired, async function (req, res, next) {
+router.patch("/:handle", authenticateJWT, adminRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     const companyData = req.body.company;
@@ -91,7 +91,7 @@ router.patch("/:handle", adminRequired, async function (req, res, next) {
   }
 });
 
-router.delete("/:handle", adminRequired, async function (req, res, next) {
+router.delete("/:handle", authenticateJWT, adminRequired, async function (req, res, next) {
   try {
     const handle = req.params.handle.toUpperCase();
     
