@@ -147,6 +147,13 @@ class User {
    * 
    **/
   static async update(username, data) {
+    // if updating password
+    if (data.password) {
+      // encrypt the password for storage in database
+      const hashedPassword = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+      data.password = hashedPassword;
+    }
+
     const { query, values } = sqlForPartialUpdate('users', data, 'username', username);
     const results = await db.query(
       query, values);
