@@ -90,7 +90,6 @@ router.get("/:id", authenticateJWT, authRequired, async function (req, res, next
   try {
     const id = req.params.id;
     const job = await Job.findOne(id);
-    console.log("JOB FROM ROUTE: ", job);
     return res.json({ job });
   } catch (err) {
     return next (err);
@@ -146,7 +145,7 @@ router.post("/", authenticateJWT, adminRequired, async function(req, res, next) 
 });
 
 /** 
- * PATCH /:id gets a job's details
+ * PATCH /:id updates a job's details
  * 
  * Auth needed: must be an admin
  * 
@@ -182,7 +181,7 @@ router.patch("/:id", authenticateJWT, adminRequired, async function (req, res, n
     const jobCheck = await Job.findOne(id);
 
     // throw error if user tries to update the id
-    if (jobData.id  && jobData.id !== +id) {
+    if (jobData.id && jobData.id !== +id) {
       throw new ExpressError('You cannot change the job id.', 400);
     }
 
@@ -209,7 +208,7 @@ router.patch("/:id", authenticateJWT, adminRequired, async function (req, res, n
  * 
  * Auth needed: must be an admin
  * 
- * Input _token
+ * Input: _token
  * 
  * {
  *    _token: _token
