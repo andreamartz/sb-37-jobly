@@ -9,7 +9,30 @@ const jobSchemaUpdate = require("../schemas/jobSchemaUpdate");
 const validateData = require("../helpers/validateData");
 const { authRequired, adminRequired } = require("../middleware/auth");
 
-router.get("/", authRequired, async function (req, res, next) {
+/** 
+ * GET /: gets all jobs
+ * 
+ * Auth: requires login
+ * 
+ * Returns object with jobs key containing array of job objects
+ * 
+ * { _token: _token }
+ * =>
+ * { 
+ *   "jobs": [
+ *     {
+ *        title: title,
+ *        company_handle: company_handle
+ *     },
+ *     {
+ *        title: title,
+ *        company_handle: company_handle
+ *     },
+ *     { ... },
+ *     { ... }
+ *   ]
+ * }
+ */
   try {
     let { search, min_salary, min_equity } = req.query;
     const data = {};
@@ -35,7 +58,33 @@ router.get("/", authRequired, async function (req, res, next) {
   }
 });
 
-router.get("/:id", authRequired, async function (req, res, next) {
+/** 
+ * GET /:id gets a job's details
+ * 
+ * Auth: requires login
+ * 
+ * Returns object with "job" key that contains a job object with property company (an object containing company details)
+ * 
+ *  * { _token: _token }
+ * =>
+ * { 
+ *   job: {
+ *     id: id,
+ *     title: title,
+ *     salary: salary,
+ *     equity: equity,
+ *     company_handle: company_handle,
+ *     date_posted: date_posted,
+ *     company: {
+ *       handle: handle,
+ *       name: name,
+ *       num_employees: num_employees,
+ *       description: description,
+ *       logo_url: logo_url
+ *     }
+ *   }
+ * }
+ */
   try {
     const id = req.params.id;
     const job = await Job.findOne(id);
@@ -46,7 +95,33 @@ router.get("/:id", authRequired, async function (req, res, next) {
   }
 });
 
-router.post("/", adminRequired, async function(req, res, next) {
+/** 
+ * POST / creates a new job
+ * 
+ * Auth: admin rights are required
+ * 
+ * { 
+ *   job: { 
+ *     title: title,
+ *     salary: salary, 
+ *     equity: equity, 
+ *     company_handle: company_handle 
+ *   },
+ *   _token: token 
+ * } 
+ * => 
+ * { 
+ *   job: {
+ *     id: id,
+ *     title: title,
+ *     salary: salary,
+ *     equity: equity,
+ *     company_handle: company_handle,
+ *     date_posted: date_posted
+ *   }
+ * }
+ * 
+ */
   try {
     // validate data
     const validationOutcome = validateData(req.body, jobSchemaNew);
@@ -67,7 +142,34 @@ router.post("/", adminRequired, async function(req, res, next) {
   }
 });
 
-router.patch("/:id", adminRequired, async function (req, res, next) {
+/** 
+ * PATCH /:id gets a job's details
+ * 
+ * Auth needed: must be an admin
+ * 
+ * Fields that can be updated: title, salary, equity, company_handle, date_posted
+ * 
+ * {
+      job: {
+        title: title,
+        salary: salary,
+        equity: equity
+      },
+      _token: _token
+    }
+ * => 
+ * {
+ *   job: {
+ *     id: id,
+ *     title: title,
+ *     salary: salary,
+ *     equity: equity,
+ *     company_handle: company_handle,
+ *     date_posted: date_posted
+ *   }
+ * } 
+ */
+
   try {
     const id = req.params.id;
     const jobData = req.body.job;
@@ -98,7 +200,21 @@ router.patch("/:id", adminRequired, async function (req, res, next) {
   }
 });
 
-router.delete("/:id", adminRequired, async function (req, res, next) {
+/** 
+ * DELETE /:id deletes a job
+ * 
+ * Auth needed: must be an admin
+ * 
+ * Input _token
+ * 
+ * {
+ *    _token: _token
+ *  }
+ * => 
+ * {
+ *   message: "Job deleted"
+ * } 
+ */
   try {
     const id = req.params.id;
     console.log("REQ.PARAMS.ID: ", req.params.id);
