@@ -191,7 +191,7 @@ describe("GET /users/:username", () => {
     );
   });
 
-  test("404 if user cannot be found", async function() {
+  test("Responds with 404 if user cannot be found", async function() {
     const res = await request(app)
       .get(`/users/wronguser`)
     ;
@@ -208,8 +208,7 @@ describe("PATCH /users/:username", () => {
       user: 
         { email: "newEmail@test.com" },
       _token: TEST_DATA.notAdminToken
-      }
-    ;
+    };
     const res = await request(app)
       .patch(`/users/${TEST_DATA.notAdminUsername}`)
       .send(data)
