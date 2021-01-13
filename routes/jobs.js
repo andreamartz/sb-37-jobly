@@ -7,7 +7,7 @@ const ExpressError = require("../helpers/expressError");
 const jobSchemaNew = require("../schemas/jobSchemaNew");
 const jobSchemaUpdate = require("../schemas/jobSchemaUpdate");
 const validateData = require("../helpers/validateData");
-const { authRequired, adminRequired } = require("../middleware/auth");
+const { authenticateJWT, authRequired, adminRequired } = require("../middleware/auth");
 
 /** 
  * GET /: gets all jobs
@@ -33,6 +33,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
  *   ]
  * }
  */
+router.get("/", authenticateJWT, authRequired, async function (req, res, next) {
   try {
     let { search, min_salary, min_equity } = req.query;
     const data = {};
@@ -85,6 +86,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
  *   }
  * }
  */
+router.get("/:id", authenticateJWT, authRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     const job = await Job.findOne(id);
@@ -122,6 +124,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
  * }
  * 
  */
+router.post("/", authenticateJWT, adminRequired, async function(req, res, next) {
   try {
     // validate data
     const validationOutcome = validateData(req.body, jobSchemaNew);
@@ -170,6 +173,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
  * } 
  */
 
+router.patch("/:id", authenticateJWT, adminRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     const jobData = req.body.job;
@@ -215,6 +219,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
  *   message: "Job deleted"
  * } 
  */
+router.delete("/:id", authenticateJWT, adminRequired, async function (req, res, next) {
   try {
     const id = req.params.id;
     console.log("REQ.PARAMS.ID: ", req.params.id);
