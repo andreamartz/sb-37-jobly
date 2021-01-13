@@ -85,7 +85,6 @@ async function beforeEachHook(TEST_DATA) {
       ['TGT', 'Target', 20000, 'Lower-tier retail department store', 'https://placekitten.com/200/300']
     );
     TEST_DATA.currentCompany = newCompany.rows[0];
-
     /**
      * insert a sample job into the database and store it in TEST_DATA
     */ 
@@ -97,6 +96,7 @@ async function beforeEachHook(TEST_DATA) {
         [TEST_DATA.currentCompany.handle]
     );
     TEST_DATA.jobId = currentJob.rows[0].id;
+    TEST_DATA.jobId = +TEST_DATA.jobId;
   } catch (error) {
     console.error(error);
   }
