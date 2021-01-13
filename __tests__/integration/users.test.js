@@ -219,6 +219,32 @@ describe("PATCH /users/:username", () => {
     expect(user.email).toBe("newEmail@test.com");
   });
 
+  test("Updates user's password securely by storing hashed password", async () => {
+    const data = {
+      user:
+        { password: "notHashed"},
+        _token: TEST_DATA.notAdminToken
+    };
+    const res = await request(app)
+      .patch(`/users/${TEST_DATA.notAdminUsername}`)
+      .send(data)
+    ;
+    const user = res.body.user;
+    expect(res.statusCode).toEqual(200);
+    expect(user).not.toHaveProperty("password");
+
+    // verify that hashedPassword was stored in db (and not the unhashed password)
+    const testUserData = await request(app)
+      .get(`/users/${TEST_DATA.notAdminUsername}`)
+    ;
+    const userTest = testUserData.body.user;
+    expect(res.statusCode).toEqual(200);
+    expect(userTest.password).not.toBe(null);
+    expect(userTest.password).not.toEqual(
+      data.user.password)
+    ;
+  });
+  
   test("Prohibits update of user's username", async () => {
     const data = { 
       user: 
