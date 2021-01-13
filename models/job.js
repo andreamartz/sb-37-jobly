@@ -113,13 +113,11 @@ class Job {
     if (results.rows.length === 0) {
       throw new ExpressError('No such job was found', 404);
     }
-    console.log("RESULTS.ROWS[0]: ", results.rows[0]);
     return results.rows[0];
   }
 
   static async remove(id) {
     id = +id;
-    console.log("ID: ", id);
     const result = await db.query(
       `DELETE FROM jobs 
       WHERE id = $1

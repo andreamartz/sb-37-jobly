@@ -15,11 +15,9 @@ function authenticateJWT(req, res, next) {
     const payload = jwt.verify(tokenFromBody, SECRET_KEY);
     // if we get to here, no error was thrown by jwt.verify
     req.user = payload;
-    console.log("Hey! authenticateJWT middleware ran with no problem!");
     return next();
   } catch(err) {
     // error in this middleware is not one we care about -- continue on
-    console.log("ERR: ", err, "No token was found; authenticateJWT middleware returned an error, but continue on...");
     return next();
   }
 }
@@ -33,10 +31,8 @@ function authRequired(req, res, next) {
     if (!req.user) {
       throw new ExpressError("You must login first.", 401);
     } 
-    console.log("authRequired middleware ran with no problem");
     return next();
   } catch (err) {
-    console.log("authRequired middleware threw an error");
     return next(err);
   }
 }
@@ -50,10 +46,8 @@ function adminRequired(req, res, next) {
     if (!req.user || !req.user.is_admin) {
       throw new ExpressError("Unauthorized; you don't have admin rights", 401);
     }
-    console.log("adminRequired middleware ran with no problem");
     return next();
   } catch (err) {
-    console.log("adminRequired middleware threw an error");
     return next(err);
   }
 }
@@ -67,10 +61,8 @@ function correctUserRequired(req, res, next) {
     if (!req.user || req.user.username !== req.params.username) {
       throw new ExpressError("Unauthorized", 401);
     }
-    console.log("correctUserRequired middleware ran with no problem");
     return next();
   } catch (err) {
-    console.log("correctUserRequired middleware threw an error");
     return next(err);
   }
 }
